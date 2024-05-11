@@ -1,0 +1,6 @@
+development:
+  clients:
+    default:
+      uri: mongodb+srv://Cluster10559:<password>@cluster10559.lqemvbb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster10559
+      options:
+        server_selection_timeout: 5
