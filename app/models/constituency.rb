@@ -15,5 +15,5 @@ class Constituency
 
   # Associations
   has_many :candidates, class_name: 'Candidate'
-  has_many :voters, class_name: 'Voter'
+  has_many :users, class_name: 'User'
 end
