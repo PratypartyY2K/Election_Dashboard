@@ -2,6 +2,9 @@ class Constituency
   include Mongoid::Document
   include Mongoid::Timestamps
 
+  # Specify the custom collection name
+  store_in collection: 'constituency_info', database: 'election_dashboard'
+
   # Fields
   field :constituency_id, type: Integer
   field :valid_votes, type: Integer

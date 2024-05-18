@@ -1,3 +1,3 @@
-class VoterSerializer < ActiveModel::Serializer
+class UserSerializer < ActiveModel::Serializer
   attributes :id
 end

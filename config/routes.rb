@@ -1,12 +1,20 @@
 Rails.application.routes.draw do
-  resources :voters
+  # Define the root route if you have a home page
+  root 'pages#home'
+
+  # Resources routes
+  resources :users
+  
   resources :candidates
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
-  get "up" => "rails/health#show", as: :rails_health_check
+  resources :constituencies do
+    resources :candidates # Nested routes to handle constituency's candidates
+  end
 
-  # Defines the root path route ("/")
-  # root "posts#index"
+  # You can also define specific custom routes if needed, for example:
+  # get 'users/:id/voting_history', to: 'users#voting_history'
+  # get 'constituencies/:id/results', to: 'constituencies#results'
+
+  # Routes for parties if needed
+  resources :parties
 end

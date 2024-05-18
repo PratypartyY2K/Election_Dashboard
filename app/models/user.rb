@@ -2,6 +2,9 @@ class User
   include Mongoid::Document
   include Mongoid::Timestamps
 
+  # Specify the custom collection name
+  store_in collection: 'user_info', database: 'election_dashboard'
+
   # Fields
   field :name, type: String
   field :gender, type: String

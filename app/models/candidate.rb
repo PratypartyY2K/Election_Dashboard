@@ -2,6 +2,9 @@ class Candidate
   include Mongoid::Document
   include Mongoid::Timestamps
 
+  # Specify the custom collection name
+  store_in collection: 'candidate_info', database: 'election_dashboard'
+
   # Fields
   field :constituency_id, type: Integer
   field :candidate_name, type: String
