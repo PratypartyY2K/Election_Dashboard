@@ -1,3 +1,4 @@
 class UserSerializer < ActiveModel::Serializer
-  attributes :id
+  attributes :name, :gender, :constituency_id
+  belongs_to :constituency
 end
