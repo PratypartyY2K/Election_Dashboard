@@ -45,7 +45,7 @@ gem "mongoid", "~> 9.0.0"
 gem 'active_model_serializers', '~> 0.10.13'
 
 # Use Kaminari to paginate API responses
-gem 'kaminari', '~> 1.2', '>= 1.2.2'
+gem 'kaminari-mongoid', '~> 1.0', '>= 1.0.2'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

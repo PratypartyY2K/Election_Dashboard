@@ -17,6 +17,6 @@ class Candidate
   field :party_id, type: Integer
 
   # Associations
-  belongs_to :constituency, class_name: 'Constituency', foreign_key: 'constituency_id'
-  belongs_to :party, class_name: 'Party', foreign_key: 'party_id'
+  belongs_to :constituency, class_name: 'Constituency', foreign_key: :constituency_id
+  belongs_to :party, class_name: 'Party', foreign_key: :party_id
 end

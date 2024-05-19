@@ -10,7 +10,7 @@ Mongoid.configure do
   # configuration, whenever possible, but if you prefer, you can set
   # configuration values here, instead:
   # 
-  #   config.log_level = :debug
+  config.log_level = :warn
   #
   # Note that the settings in config/mongoid.yml always take precedence,
   # whatever else is set here.

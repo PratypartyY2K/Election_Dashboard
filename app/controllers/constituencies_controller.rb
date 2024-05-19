@@ -1,5 +1,5 @@
 class ConstituencyController < ApplicationController
-  before_action :set_candidate, only: %i[ show update destroy ]
+  before_action :set_constituency, only: %i[ show update destroy ]
 
   # GET /constituencies
   def index
@@ -10,43 +10,43 @@ class ConstituencyController < ApplicationController
 
   # GET /constituencies/1
   def show
-    render json: @candidate
+    render json: @constituency
   end
 
   # POST /constituencies
   def create
-    @candidate = candidate.new(candidate_params)
+    @constituency = constituency.new(constituency_params)
 
-    if @candidate.save
-      render json: @candidate, status: :created, location: @candidate
+    if @constituency.save
+      render json: @constituency, status: :created, location: @constituency
     else
-      render json: @candidate.errors, status: :unprocessable_entity
+      render json: @constituency.errors, status: :unprocessable_entity
     end
   end
 
   # PATCH/PUT /constituencies/1
   def update
-    if @candidate.update(candidate_params)
-      render json: @candidate
+    if @constituency.update(constituency_params)
+      render json: @constituency
     else
-      render json: @candidate.errors, status: :unprocessable_entity
+      render json: @constituency.errors, status: :unprocessable_entity
     end
   end
 
   # DELETE /constituencies/1
   def destroy
-    @candidate.destroy!
+    @constituency.destroy!
   end
 
   private
 
   # Use callbacks to share common setup or constraints between actions.
-  def set_candidate
-    @candidate = Constituency.find(params[:id])
+  def set_constituency
+    @constituency = Constituency.find(params[:id])
   end
 
   # Only allow a list of trusted parameters through.
-  def candidate_params
-    params.require(:candidate).permit(:name)
+  def constituency_params
+    params.require(:constituency).permit(:name)
   end
 end
