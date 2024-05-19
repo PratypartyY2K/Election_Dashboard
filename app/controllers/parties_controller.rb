@@ -13,7 +13,7 @@ class PartiesController < ApplicationController
     parties_with_associations = @parties.map do |party|
       {
         party_name: party.party,
-        # candidates: party.all_candidates.pluck(:candidate_name)
+        candidates: party.all_candidates.pluck(:candidate_name)
       }
     end
 
