@@ -3,14 +3,26 @@ class UsersController < ApplicationController
 
   # GET /users
   def index
-    @users = User.all
-
-    render json: @users
+    sort_column = params[:sort] || 'name'
+    sort_direction = params[:direction] || 'asc'
+    @users = User.includes(:constituency).order("#{sort_column} #{sort_direction}")
+                 .page(params[:page]).per(params[:limit])
+    users_with_associations = @users.map do |user|
+      {
+        name_of_user: user.name,
+        belongs_to_constituency: user.belongs_to_constituency.pluck(:constituency_name)
+      }
+    end
+    render json: users_with_associations, meta: pagination_meta(@users)
   end
 
   # GET /users/1
   def show
-    render json: @user
+    @constituency = @user.belongs_to_constituency
+
+    respond_to do |format|
+      format.json { render json: { user: @user, constituency: @constituency } }
+    end
   end
 
   # POST /users
