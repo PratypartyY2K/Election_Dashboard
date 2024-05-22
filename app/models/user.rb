@@ -12,9 +12,4 @@ class User
 
   # Associations
   belongs_to :constituency, class_name: 'Constituency', foreign_key: 'constituency_id'
-
-  # Method to fetch all candidates associated with the party
-  def belongs_to_constituency
-    Constituency.where(constituency_id: constituency_id)
-  end
 end

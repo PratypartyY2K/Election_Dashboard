@@ -5,15 +5,21 @@ class UsersController < ApplicationController
   def index
     sort_column = params[:sort] || 'name'
     sort_direction = params[:direction] || 'asc'
-    @users = User.includes(:constituency).order("#{sort_column} #{sort_direction}")
-                 .page(params[:page]).per(params[:limit])
+    page = params[:page] || 1
+    limit = params[:limit] || 10
+    @users = User.order(sort_column => sort_direction).page(page).per(limit)
+
+    # Fetch candidates for the parties in one query
+    constituency_ids = @users.pluck(:constituency_id)
+    constituencies = Constituency.where(constituency_id: { '$in': constituency_ids }).pluck(:constituency_name)
+
     users_with_associations = @users.map do |user|
       {
         name_of_user: user.name,
-        belongs_to_constituency: user.belongs_to_constituency.pluck(:constituency_name)
+        belongs_to_constituency: constituencies
       }
     end
-    render json: users_with_associations, meta: pagination_meta(@users)
+    render json: {user: users_with_associations}, meta: pagination_meta(@users)
   end
 
   # GET /users/1
