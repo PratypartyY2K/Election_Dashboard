@@ -3,9 +3,32 @@ class CandidatesController < ApplicationController
 
   # GET /candidates
   def index
-    @candidates = Candidate.all
+    sort_column = params[:sort] || 'candidate_name'
+    sort_direction = params[:direction] || 'asc'
+    page = params[:page] || 1
+    limit = params[:limit] || 10
+    @candidates = Candidate.order(sort_column => sort_direction)
+                           .page(page)
+                           .per(limit)
 
-    render json: @candidates
+    # Fetch party names for the candidates in one query
+    party_ids = @candidates.pluck(:party_id)
+    parties = Party.where(party_id: { '$in': party_ids }).pluck(:party)
+
+    # Fetch constituency names for the candidates in one query
+    constituency_ids = @candidates.pluck(:constituency_id)
+    constituencies = Constituency.where(constituency_id: { '$in': constituency_ids }).pluck(:constituency_name)
+
+    # Prepare response
+    candidates_with_associations = @candidates.map do |candidate|
+      {
+        candidate_name: candidate.candidate_name,
+        belongs_to_party: parties,
+        contested_from_constituency: constituencies
+      }
+    end
+
+    render json: { candidates: candidates_with_associations }, meta: pagination_meta(@candidates)
   end
 
   # GET /candidates/1
