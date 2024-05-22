@@ -47,6 +47,12 @@ gem 'active_model_serializers', '~> 0.10.13'
 # Use Kaminari to paginate API responses
 gem 'kaminari-mongoid', '~> 1.0', '>= 1.0.2'
 
+# This gem provides jQuery and the jQuery-ujs driver
+gem 'jquery-rails', '~> 4.4'
+
+gem 'ajax-datatables-rails', '~> 1.5'
+gem 'jquery-datatables', '~> 1.10', '>= 1.10.20'
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ]

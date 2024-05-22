@@ -7,9 +7,12 @@
     <%= csp_meta_tag %>
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.7/css/dataTables.dataTables.css" />
+  
   </head>
 
   <body>
     <%= yield %>
   </body>
+  <script src="https://cdn.datatables.net/2.0.7/js/dataTables.js"></script>
 </html>

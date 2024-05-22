@@ -1,14 +1,70 @@
-<p style="color: green"><%= notice %></p>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Users</title>
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    table, th, td {
+      border: 1px solid black;
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <h1>Users</h1>
 
-<h1>Users</h1>
+  <table id="users-table" style="display:none;">
+    <thead>
+      <tr>
+        <th> Name </th>
+        <th> Gender </th>
+        <th> Constituency </th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Data will be inserted here dynamically -->
+    </tbody>
+  </table>
 
-<div id="users">
-  <% @users.each do |user| %>
-    <%= render user %>
-    <p>
-      <%= link_to "Show this user", user %>
-    </p>
-  <% end %>
-</div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      fetch('/users.json')
+        .then(response => response.json())
+        .then(data => {
+          console.log(data)
+          const users = data.users;
+          const table = document.getElementById('users-table');
+          const tableBody = table.querySelector('tbody');
+          tableBody.innerHTML = '';
 
-<%= link_to "New user", new_user_path %>
+          users.forEach(user => {
+            const row = document.createElement('tr');
+            const nameCell = document.createElement('td');
+            nameCell.textContent = user.name;
+            const genderCell = document.createElement('td');
+            genderCell.textContent = user.gender;
+            const constituencyCell = document.createElement('td');
+            constituencyCell.textContent = user.constituency_id;
+
+            row.appendChild(nameCell);
+            row.appendChild(genderCell);
+            row.appendChild(constituencyCell)
+            tableBody.appendChild(row);
+          });
+
+          table.style.display = 'table';  // Show the table after data is loaded
+        })
+        .catch(error => console.error('Error fetching data:', error));
+    });
+  </script>
+</body>
+</html>
