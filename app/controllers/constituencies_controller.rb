@@ -1,11 +1,17 @@
-class ConstituencyController < ApplicationController
+class ConstituenciesController < ApplicationController
   before_action :set_constituency, only: %i[ show update destroy ]
 
   # GET /constituencies
   def index
-    @constituencies = Constituency.all
+    sort_column = params[:sort] || 'constituency_id'
+    sort_direction = params[:direction] || 'asc'
+    page = params[:page] || 1
+    limit = params[:limit] || 10
+    @constituencies = Constituency.order(sort_column => sort_direction)
+                                  .page(page)
+                                  .per(limit)
 
-    render json: @constituencies
+    render json: @constituencies, meta: pagination_meta(@constituencies)
   end
 
   # GET /constituencies/1

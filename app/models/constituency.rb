@@ -19,4 +19,7 @@ class Constituency
   # Associations
   has_many :candidates, class_name: 'Candidate'
   has_many :users, class_name: 'User'
+
+  # Indexes
+  index({ constituency_id: 1 }, { unique: true, name: 'constituency_id_index' })
 end
