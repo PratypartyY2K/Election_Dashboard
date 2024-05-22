@@ -5,19 +5,25 @@ class PartiesController < ApplicationController
   def index
     sort_column = params[:sort] || 'party_id'
     sort_direction = params[:direction] || 'asc'
-    @parties = Party.includes(:candidates)
-                    .order("#{sort_column} #{sort_direction}")
-                    .page(params[:page])
-                    .per(params[:limit])
+    page = params[:page] || 1
+    limit = params[:limit] || 10
+    @parties = Party.order(sort_column => sort_direction)
+                    .page(page)
+                    .per(limit)
 
+    # Fetch candidates for the parties in one query
+    party_ids = @parties.pluck(:party_id)
+    candidates = Candidate.where(party_id: { '$in': party_ids }).pluck(:candidate_name)
+
+    # Prepare response
     parties_with_associations = @parties.map do |party|
       {
         party_name: party.party,
-        candidates: party.all_candidates.pluck(:candidate_name)
+        candidates: candidates
       }
     end
 
-    render json: parties_with_associations, meta: pagination_meta(@parties)
+    render json: { parties: parties_with_associations }, meta: pagination_meta(@parties)
   end
 
   # GET /parties/1
@@ -64,15 +70,5 @@ class PartiesController < ApplicationController
   # Only allow a list of trusted parameters through.
   def party_params
     params.require(:party).permit(:name, :party_id)
-  end
-
-  def pagination_meta(parties)
-    {
-      current_page: parties.current_page,
-      next_page: parties.next_page,
-      prev_page: parties.prev_page,
-      total_pages: parties.total_pages,
-      total_count: parties.total_count
-    }
   end
 end

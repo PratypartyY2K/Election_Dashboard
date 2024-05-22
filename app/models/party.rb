@@ -14,9 +14,4 @@ class Party
 
   # Indexes
   index({ party_id: 1 }, { unique: true, name: 'party_id_index' })
-
-  # Method to fetch all candidates associated with the party
-  def all_candidates
-    Candidate.where(party_id: party_id)
-  end
 end
