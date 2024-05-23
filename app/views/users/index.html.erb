@@ -10,9 +10,6 @@
       border-collapse: collapse;
       margin-top: 20px;
     }
-    table, th, td {
-      border: 1px solid black;
-    }
     th, td {
       padding: 8px;
       text-align: left;
@@ -22,12 +19,12 @@
 <body>
   <h1>Users</h1>
 
-  <table id="users-table" style="display:none;">
+  <table id="users-table" class="display" style="width:100%">
     <thead>
       <tr>
-        <th> Name </th>
-        <th> Gender </th>
-        <th> Constituency </th>
+        <th>Name</th>
+        <th>Gender</th>
+        <th>Constituency</th>
       </tr>
     </thead>
     <tbody>
@@ -36,34 +33,23 @@
   </table>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      fetch('/users.json')
-        .then(response => response.json())
-        .then(data => {
-          console.log(data)
-          const users = data.users;
-          const table = document.getElementById('users-table');
-          const tableBody = table.querySelector('tbody');
-          tableBody.innerHTML = '';
-
-          users.forEach(user => {
-            const row = document.createElement('tr');
-            const nameCell = document.createElement('td');
-            nameCell.textContent = user.name;
-            const genderCell = document.createElement('td');
-            genderCell.textContent = user.gender;
-            const constituencyCell = document.createElement('td');
-            constituencyCell.textContent = user.constituency_id;
-
-            row.appendChild(nameCell);
-            row.appendChild(genderCell);
-            row.appendChild(constituencyCell)
-            tableBody.appendChild(row);
-          });
-
-          table.style.display = 'table';  // Show the table after data is loaded
-        })
-        .catch(error => console.error('Error fetching data:', error));
+    $(document).ready(function() {
+      $('#users-table').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+          url: '/users.json',
+          dataSrc: 'data'
+        },
+       columns: [
+          { data: 'name', type: 'string' },
+          { data: 'gender', type: 'string' },
+          { data: 'constituency_id', type: 'num' }
+        ],
+        pageLength: 10, // default page length
+        lengthMenu: [[5, 10, 15], [5, 10, 15]], // dropdown options
+        order: [[0, 'asc']],
+      });
     });
   </script>
 </body>
