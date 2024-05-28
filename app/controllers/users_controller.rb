@@ -12,9 +12,23 @@ class UsersController < ApplicationController
     # offset = (page - 1) * limit
     # puts offset
     # @users = User.order(sort_column => sort_direction).page(page).skip(offset).per(limit)
+    sort_column = params.dig(:columns, params.dig(:order, '0', :column).to_s, :data) || 'name'
+    sort_direction = params.dig(:order, '0', :dir) || 'asc'
+    page = params[:length].to_i.nonzero? ? params[:start].to_i / params[:length].to_i + 1 : 1
+    limit = params[:length].to_i.positive? ? params[:length].to_i : 10
+
+    filters = {}
+    filters[:name] = /#{params.dig(:columns, '0', :search, :value)}/i unless params.dig(:columns, '0', :search, :value).blank?
+    filters[:gender] = params.dig(:columns, '1', :search, :value) unless params.dig(:columns, '1', :search, :value).blank?
+    filters[:constituency_id] = params.dig(:columns, '2', :search, :value).to_i unless params.dig(:columns, '2', :search, :value).blank?
+
+    @users = User.where(filters).order("#{sort_column} #{sort_direction}").page(page).per(limit)
+    total_records = User.count
+    # total_records = User.count
     respond_to do |format|
       format.html
-      format.json { render json: users_data }
+      # format.json { render json: users_data }
+      format.json { render json: { users: @users, meta: pagination_meta(@users), total_records: total_records } }
     end
   end
 
@@ -73,8 +87,8 @@ class UsersController < ApplicationController
     # Validate and set the sort column and direction
     # Rails.logger.debug "Parameters passed: #{params}"
     # puts params.dig(:order, '0', :column).to_i
-    sort_column = params.dig(:columns, params.dig(:order, '0', :column).to_s, :data)
-    sort_direction = params.dig(:order, '0', :dir) || 'asc'
+    # sort_column = params.dig(:columns, params.dig(:order, '0', :column).to_s, :data)
+    # sort_direction = params.dig(:order, '0', :dir) || 'asc'
 
     # Rails.logger.debug "Sort Column: #{sort_column}"
     # Rails.logger.debug "Sort Direction: #{sort_direction}"
@@ -88,25 +102,25 @@ class UsersController < ApplicationController
     # Rails.logger.debug "Sort Direction: #{sort_direction}"
 
     # Pagination parameters
-    page = params[:length].to_i.nonzero? ? params[:start].to_i / params[:length].to_i + 1 : 1
-    limit = params[:length].to_i.positive? ? params[:length].to_i : 10
+    # page = params[:length].to_i.nonzero? ? params[:start].to_i / params[:length].to_i + 1 : 1
+    # limit = params[:length].to_i.positive? ? params[:length].to_i : 10
 
     # Filter conditions
-    filters = {}
-    filters[:name] = /#{params[:columns]['0'][:search][:value]}/i unless params[:columns]['0'][:search][:value].blank?
-    filters[:gender] = params[:columns]['1'][:search][:value] unless params[:columns]['1'][:search][:value].blank?
-    filters[:constituency_id] = params[:columns]['2'][:search][:value].to_i unless params[:columns]['2'][:search][:value].blank?
+    # filters = {}
+    # filters[:name] = /#{params.dig(:columns, '0', :search, :value)}/i unless params.dig(:columns, '0', :search, :value).blank?
+    # filters[:gender] = params.dig(:columns, '1', :search, :value) unless params.dig(:columns, '1', :search, :value).blank?
+    # filters[:constituency_id] = params.dig(:columns, '2', :search, :value).to_i unless params.dig(:columns, '2', :search, :value).blank?
     # Rails.logger.debug "Filters: #{filters}"
 
     # Fetch and sort users
-    @users = User.where(filters).order(sort_column => sort_direction).page(page).per(limit)
+    # @users = User.where(filters).order("#{sort_column} #{sort_direction}").page(page).per(limit)
 
     # Build the response
-    {
-      draw: params[:draw].to_i,
-      recordsTotal: User.count,
-      recordsFiltered: @users.total_count,
-      data: @users.as_json(only: %i[name gender constituency_id])
-    }
+    # {
+    #   draw: params[:draw].to_i,
+    #   recordsTotal: User.count,
+    #   recordsFiltered: @users.total_count,
+    #   data: @users.as_json(only: %i[name gender constituency_id])
+    # }
   end
 end

@@ -46,7 +46,7 @@
   <script>
     $(document).ready(function() {
       console.log("First call");
-      $(":text" ).val('')
+      $( ":text" ) .val('');
       var table = $('#users-table').DataTable({
         orderCellsTop: true,
         searchable: false,
@@ -58,13 +58,16 @@
         ajax: {
           url: '/users.json',
           data: function(d) {
+            // console.log(d);
             d.columns[0].search.value = $('#name-search').val();
             d.columns[1].search.value = $('#gender-select').val();
             d.columns[2].search.value = $('#constituency-search').val();
           },
           dataSrc: function(json) {
-            // console.log(json);
-            return json.data;
+            console.log(json);
+            json.recordsTotal = json.total_records;
+            json.recordsFiltered = json.meta.total_count;
+            return json.users;
           },
           error: function(xhr, status, errr) {
             alert(status);
