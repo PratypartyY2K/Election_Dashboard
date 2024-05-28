@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   # Define the root route if you have a home page
   root 'pages#home'
-
+  get 'users/gender_options', to: 'users#gender_options'
   # Resources routes
   resources :users
   resources :candidates

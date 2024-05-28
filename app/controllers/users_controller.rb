@@ -18,6 +18,11 @@ class UsersController < ApplicationController
     end
   end
 
+  def gender_options
+    genders = User.distinct(:gender)
+    render json: genders
+  end
+
   # GET /users/1
   def show
     @constituency = @user.belongs_to_constituency
@@ -66,16 +71,25 @@ class UsersController < ApplicationController
 
   def users_data
     # Validate and set the sort column and direction
-    sort_column = params.dig(:columns, params.dig(:order, '0', :column).to_i, :data) || 'name'
+    Rails.logger.debug "Parameters passed: #{params}"
+    puts params.dig(:order, '0', :column).to_i
+    sort_column = params.dig(:columns, params.dig(:order, '0', :column).to_s, :data)
     sort_direction = params.dig(:order, '0', :dir) || 'asc'
 
+    Rails.logger.debug "Sort Column: #{sort_column}"
+    Rails.logger.debug "Sort Direction: #{sort_direction}"
+
     # Ensure the sort_column is a valid attribute
-    valid_columns = %w[name gender constituency_id]
-    sort_column = 'name' unless valid_columns.include?(sort_column)
+    # valid_columns = %w[name gender constituency_id]
+    # sort_column = 'name' unless valid_columns.include?(sort_column)
+
+    # Log the parameters for debugging
+    Rails.logger.debug "Sort Column: #{sort_column}"
+    Rails.logger.debug "Sort Direction: #{sort_direction}"
 
     # Pagination parameters
     page = (params[:start].to_i / params[:length].to_i) + 1
-    limit = params[:length].to_i > 0 ? params[:length].to_i : 10
+    limit = params[:length].to_i.positive? ? params[:length].to_i : 10
 
     # Fetch and sort users
     @users = User.order(sort_column => sort_direction).page(page).per(limit)
@@ -85,7 +99,7 @@ class UsersController < ApplicationController
       draw: params[:draw].to_i,
       recordsTotal: User.count,
       recordsFiltered: @users.total_count,
-      data: @users.as_json(only: [:name, :gender, :constituency_id])
+      data: @users.as_json(only: %i[name gender constituency_id])
     }
   end
 end

@@ -14,6 +14,9 @@
       padding: 8px;
       text-align: left;
     }
+    .filters th {
+      padding: 4px 8px;
+    }
   </style>
 </head>
 <body>
@@ -26,17 +29,29 @@
         <th>Gender</th>
         <th>Constituency</th>
       </tr>
+      <tr class="filters">
+        <th><input type="text" id="name-search" placeholder="Search Name"></th>
+        <th><select id="gender-select">
+          <option value="">All</option></select></th>
+        <th><input type="text" id="constituency-search" placeholder="Search Constituency"></th>
+      </tr>
     </thead>
     <tbody>
       <!-- Data will be inserted here dynamically -->
     </tbody>
   </table>
 
+  <button id="search-button">Search</button>
+  
   <script>
     $(document).ready(function() {
       $('#users-table').DataTable({
+        orderCellsTop: true,
+        searchable: true,
+        deferRender: true,
         processing: true,
         serverSide: true,
+        columnDefs: [{ orderable: false, targets: 1 }],
         ajax: {
           url: '/users.json',
           dataSrc: 'data'
@@ -48,8 +63,44 @@
         ],
         pageLength: 10, // default page length
         lengthMenu: [[5, 10, 15], [5, 10, 15]], // dropdown options
-        order: [[0, 'asc']],
+        layout: {
+          top1: {
+              searchBuilder: {
+                liveSearch: false
+              }
+          }
+        },
+        initComplete: function () { 
+          const api = this.api();
+
+          // Fetch and populate gender options
+          $.ajax({
+            url: '/users/gender_options',
+            method: 'GET',
+            success: function(data) {
+              const genderSelect = $('#gender-select');
+              data.forEach(gender => {
+                genderSelect.append(`<option value="${gender}">${gender}</option>`);
+              });
+            }
+          });
+
+          // Apply search
+          // api.columns().every(function() {
+          //   const column = this;
+          //   $('input', column.header().nextElementSibling).on('blur', function() {
+          //     if (column.search() !== this.value) {
+          //       column.search(this.value).draw();
+          //     }
+          //   });
+          //   $('select', column.header().nextElementSibling).on('change', function() {
+          //     column.search(this.value).draw();
+          //   });
+          // });  
+        }
       });
+      $('#users-table_filter').hide();
+      
     });
   </script>
 </body>
