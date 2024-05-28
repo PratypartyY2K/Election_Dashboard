@@ -20,7 +20,9 @@
   </style>
 </head>
 <body>
-  <h1>Users</h1>
+  <h1> Users Table </h1>
+  <h3> Press the Search button to see results after entering filters </h3>
+  <p> <button id="search-button">Search</button> </p>
 
   <table id="users-table" class="display" style="width:100%">
     <thead>
@@ -40,39 +42,42 @@
       <!-- Data will be inserted here dynamically -->
     </tbody>
   </table>
-
-  <button id="search-button">Search</button>
   
   <script>
     $(document).ready(function() {
-      $('#users-table').DataTable({
+      console.log("First call");
+      $(":text" ).val('')
+      var table = $('#users-table').DataTable({
         orderCellsTop: true,
-        searchable: true,
+        searchable: false,
         deferRender: true,
         processing: true,
         serverSide: true,
+        regex: false,
         columnDefs: [{ orderable: false, targets: 1 }],
         ajax: {
           url: '/users.json',
-          dataSrc: 'data'
+          data: function(d) {
+            d.columns[0].search.value = $('#name-search').val();
+            d.columns[1].search.value = $('#gender-select').val();
+            d.columns[2].search.value = $('#constituency-search').val();
+          },
+          dataSrc: function(json) {
+            // console.log(json);
+            return json.data;
+          },
+          error: function(xhr, status, errr) {
+            alert(status);
+          },
         },
-       columns: [
-          { data: 'name', type: 'string' },
-          { data: 'gender', type: 'string' },
-          { data: 'constituency_id', type: 'num' }
+        columns: [
+          { data: 'name' },
+          { data: 'gender' },
+          { data: 'constituency_id' }
         ],
         pageLength: 10, // default page length
         lengthMenu: [[5, 10, 15], [5, 10, 15]], // dropdown options
-        layout: {
-          top1: {
-              searchBuilder: {
-                liveSearch: false
-              }
-          }
-        },
-        initComplete: function () { 
-          const api = this.api();
-
+        initComplete: function () {
           // Fetch and populate gender options
           $.ajax({
             url: '/users/gender_options',
@@ -82,25 +87,65 @@
               data.forEach(gender => {
                 genderSelect.append(`<option value="${gender}">${gender}</option>`);
               });
+            }, 
+            error: function(xhr, status, errr) {
+              alert(status);
             }
           });
-
-          // Apply search
-          // api.columns().every(function() {
-          //   const column = this;
-          //   $('input', column.header().nextElementSibling).on('blur', function() {
-          //     if (column.search() !== this.value) {
-          //       column.search(this.value).draw();
-          //     }
-          //   });
-          //   $('select', column.header().nextElementSibling).on('change', function() {
-          //     column.search(this.value).draw();
-          //   });
-          // });  
-        }
+        },
       });
-      $('#users-table_filter').hide();
+      // Handle search button click
+      $('#search-button').on('click', function() {
+        console.log("Second call!");
+        console.log("Name: ", $('#name-search').val());
+        console.log("Gender: ", $('#gender-select').val());
+        console.log("Constituency ID: ", $('#constituency-search').val());
+        table.ajax.reload();
+        // $.ajax({
+        //   url: '/users.json',
+        //   type: 'GET',
+        //   data: function(d) {
+        //     // name: $('#name-search').val(),
+        //     // gender: $('#gender-select').val(),
+        //     // constituency: $('#constituency-search').val()
+        //     console.log(d);
+        //     // Set search parameters only when search button is clicked
+        //     d.columns[0].search.value = $('#name-search').val();
+        //     d.columns[1].search.value = $('#gender-select').val();
+        //     d.columns[2].search.value = $('#constituency-search').val();
+        //   },
+        //   dataSrc: function(json) {
+        //     return json.data;
+        //   },
+        //   columns: [
+        //     { data: 'name' },
+        //     { data: 'gender' },
+        //     { data: 'constituency_id' }
+        //   ],
+        //   success: function(response) {
+        //     // Handle the response from the server
+        //     console.log(response);
+        //   },
+        //   error: function(xhr, status, error) {
+        //     // Handle any errors that occur during the request
+        //     console.error(xhr, status, error);
+        //   }
+        //         // dataSrc: function(json) {
+        //   //   console.log("Inside datasrc")
+        //   //   return json.data;
+        //   // },
+        //   // columns: [
+        //   //   { data: 'name' },
+        //   //   { data: 'gender' },
+        //   //   { data: 'constituency_id' }
+        //   // ]
+        // });
+        // // .done(function(data) {
+        // //   table.clear().rows.add(data.users).draw();
+        // // })
+      });
       
+      $('#users-table_filter').hide();
     });
   </script>
 </body>
