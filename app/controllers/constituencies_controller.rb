@@ -3,15 +3,38 @@ class ConstituenciesController < ApplicationController
 
   # GET /constituencies
   def index
-    sort_column = params[:sort] || 'constituency_id'
-    sort_direction = params[:direction] || 'asc'
-    page = params[:page] || 1
-    limit = params[:limit] || 10
-    @constituencies = Constituency.order(sort_column => sort_direction)
-                                  .page(page)
-                                  .per(limit)
+    # sort_column = params[:sort] || 'constituency_id'
+    # sort_direction = params[:direction] || 'asc'
+    # page = params[:page] || 1
+    # limit = params[:limit] || 10
+    # @constituencies = Constituency.order(sort_column => sort_direction)
+    #                               .page(page)
+    #                               .per(limit)
 
-    render json: @constituencies, meta: pagination_meta(@constituencies)
+    # render json: @constituencies, meta: pagination_meta(@constituencies)
+    sort_column = params.dig(:columns, params.dig(:order, '0', :column).to_s, :data) || 'constituency_id'
+    sort_direction = params.dig(:order, '0', :dir) || 'desc'
+    page = params[:length].to_i.nonzero? ? params[:start].to_i / params[:length].to_i + 1 : 1
+    limit = params[:length].to_i.positive? ? params[:length].to_i : 10
+
+    filters = {}
+    filters[:constituency_id] = params.dig(:columns, '0', :search, :value) unless params.dig(:columns, '0', :search, :value).blank?
+    filters[:constituency_name] = params.dig(:columns, '1', :search, :value) unless params.dig(:columns, '1', :search, :value).blank?
+    filters[:constituency_type] = params.dig(:columns, '2', :search, :value) unless params.dig(:columns, '2', :search, :value).blank?
+
+    @constituencies = Constituency.where(filters).order("#{sort_column} #{sort_direction}").page(page).per(limit)
+    total_records = Constituency.count
+    # total_records = Constituency.count
+    respond_to do |format|
+      format.html
+      # format.json { render json: constituencies_data }
+      format.json { render json: { constituencies: @constituencies, meta: pagination_meta(@constituencies), total_records: total_records } }
+    end
+  end
+
+  def type_options
+    ct = Constituency.distinct(:constituency_type)
+    render json: ct
   end
 
   # GET /constituencies/1

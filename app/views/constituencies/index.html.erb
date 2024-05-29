@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Constituencys</title>
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+    }
+    .filters th {
+      padding: 4px 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1> Constituency Table </h1>
+  <h3> Press the Search button to see results after entering filters </h3>
+  <p> <button id="search-button">Search</button> </p>
+
+  <table id="constituencies-table" class="display" style="width:100%">
+    <thead>
+      <tr>
+        <th> Constituency ID </th>
+        <th> Constituency Name </th>
+        <th> Constituency Type </th>
+      </tr>
+      <tr class="filters">
+        <th><input type="text" id="constituency-id-search" placeholder="Search ID"></th>
+        <th><input type="text" id="constituency-name-search" placeholder="Search Name"></th>
+        <th>
+          <select id="constituency-type-select">
+            <option value="">All</option>
+          </select>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Data will be inserted here dynamically -->
+    </tbody>
+  </table>
+  
+  <script>
+    $(document).ready(function() {
+      console.log("First call");
+      $( ":text" ).val('');
+      var table = $('#constituencies-table').DataTable({
+        orderCellsTop: true,
+        pagingType: 'full_numbers',
+        searchable: false,
+        deferRender: true,
+        processing: true,
+        serverSide: true,
+        regex: false,
+        ajax: {
+          url: '/constituencies.json',
+          data: function(d) {
+            // console.log(d);
+            d.columns[0].search.value = $('#constituency-id-search').val();
+            d.columns[1].search.value = $('#constituency-name-search').val();
+            d.columns[2].search.value = $('#constituency-type-select').val();
+          },
+          dataSrc: function(json) {
+            // console.log(json);
+            json.recordsTotal = json.total_records;
+            json.recordsFiltered = json.meta.total_count;
+            return json.constituencies;
+          },
+          error: function(xhr, status, errr) {
+            alert(status);
+          },
+        },
+        columns: [
+          { data: 'constituency_id' },
+          { data: 'constituency_name' },
+          { data: 'constituency_type' },
+        ],
+        pageLength: 10, // default page length
+        lengthMenu: [[5, 10, 15], [5, 10, 15]], // dropdown options
+        order: [[0, 'desc']],
+        initComplete: function () {
+          // Fetch and populate gender options
+          $.ajax({
+            url: '/constituencies/type_options',
+            method: 'GET',
+            success: function(data) {
+              const typeSelect = $('#constituency-type-select');
+              data.forEach(type => {
+                typeSelect.append(`<option value="${type}">${type}</option>`);
+              });
+            }, 
+            error: function(xhr, status, errr) {
+              alert(status, errr);
+            }
+          });
+        }
+      });
+      // Handle search button click
+      $('#search-button').on('click', function() {
+        console.log("Second call!");
+        console.log("Name: ", $('#constituency-name-search').val());
+        console.log("ID: ", $('#constituency-id-search').val());
+        console.log("Type: ", $('#constituency-type-select').val());
+        table.ajax.reload();
+      });
+      
+      $('#constituencies-table_filter').hide();
+    });
+  </script>
+</body>
+</html>
