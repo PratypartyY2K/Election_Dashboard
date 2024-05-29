@@ -53,6 +53,7 @@
         deferRender: true,
         processing: true,
         serverSide: true,
+        pagingType: 'full_numbers',
         regex: false,
         columnDefs: [{ orderable: false, targets: 1 }],
         ajax: {
@@ -64,7 +65,7 @@
             d.columns[2].search.value = $('#constituency-search').val();
           },
           dataSrc: function(json) {
-            console.log(json);
+            // console.log(json);
             json.recordsTotal = json.total_records;
             json.recordsFiltered = json.meta.total_count;
             return json.users;

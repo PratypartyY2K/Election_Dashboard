@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Candidates</title>
+  <title>Partys</title>
   <style>
     table {
       width: 100%;
@@ -20,21 +20,19 @@
   </style>
 </head>
 <body>
-  <h1> Candidates Table </h1>
+  <h1> Party Table </h1>
   <h3> Press the Search button to see results after entering filters </h3>
   <p> <button id="search-button">Search</button> </p>
 
-  <table id="candidates-table" class="display" style="width:100%">
+  <table id="parties-table" class="display" style="width:100%">
     <thead>
       <tr>
-        <th>Name</th>
-        <th>Gender</th>
+        <th>Party ID</th>
+        <th>Party Name</th>
       </tr>
       <tr class="filters">
-        <th><input type="text" id="name-search" placeholder="Search Name"></th>
-        <th><select id="gender-select">
-          <option value="">All</option></select>
-        </th>
+        <th><input type="text" id="party-id-search" placeholder="Search ID"></th>
+        <th><input type="text" id="party-name-search" placeholder="Search Name"></th>
       </tr>
     </thead>
     <tbody>
@@ -45,8 +43,8 @@
   <script>
     $(document).ready(function() {
       console.log("First call");
-      $( ":text" ) .val('');
-      var table = $('#candidates-table').DataTable({
+      $( ":text" ).val('');
+      var table = $('#parties-table').DataTable({
         orderCellsTop: true,
         pagingType: 'full_numbers',
         searchable: false,
@@ -54,56 +52,40 @@
         processing: true,
         serverSide: true,
         regex: false,
-        columnDefs: [{ orderable: false, targets: 1 }],
         ajax: {
-          url: '/candidates.json',
+          url: '/parties.json',
           data: function(d) {
-            console.log(d);
-            d.columns[0].search.value = $('#name-search').val();
-            d.columns[1].search.value = $('#gender-select').val();
+            // console.log(d);
+            d.columns[0].search.value = $('#party-id-search').val();
+            d.columns[1].search.value = $('#party-name-search').val();
           },
           dataSrc: function(json) {
-            console.log(json);
+            // console.log(json);
             json.recordsTotal = json.total_records;
             json.recordsFiltered = json.meta.total_count;
-            return json.candidates;
+            return json.parties;
           },
           error: function(xhr, status, errr) {
             alert(status);
           },
         },
         columns: [
-          { data: 'candidate_name' },
-          { data: 'sex' },
+          { data: 'party_id' },
+          { data: 'party' },
         ],
         pageLength: 10, // default page length
         lengthMenu: [[5, 10, 15], [5, 10, 15]], // dropdown options
-        initComplete: function () {
-          // Fetch and populate gender options
-          $.ajax({
-            url: '/candidates/gender_options',
-            method: 'GET',
-            success: function(data) {
-              const genderSelect = $('#gender-select');
-              data.forEach(gender => {
-                genderSelect.append(`<option value="${gender}">${gender}</option>`);
-              });
-            }, 
-            error: function(xhr, status, errr) {
-              alert(status);
-            }
-          });
-        },
+        order: [[0, 'desc']]
       });
       // Handle search button click
       $('#search-button').on('click', function() {
         console.log("Second call!");
-        console.log("Name: ", $('#name-search').val());
-        console.log("Gender: ", $('#gender-select').val());
+        console.log("Name: ", $('#party-name-search').val());
+        console.log("ID: ", $('#party-id-search').val());
         table.ajax.reload();
       });
       
-      $('#candidate-table_filter').hide();
+      $('#parties-table_filter').hide();
     });
   </script>
 </body>
