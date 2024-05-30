@@ -1,6 +1,11 @@
 <p style="color: green"><%= notice %></p>
 
 <%= render @user %>
+<p>Name: <%= @user.name %></p>
+<p>User ID: <%= @user.id %></p>
+<p>Belongs to Constituency: <%= @user.constituency_id%></p>
+<p>Voter count: <%= voter_count %></p>
+<p></p>
 
 <div>
   <%= link_to "Edit this user", edit_user_path(@user) %> |

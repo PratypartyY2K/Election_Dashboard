@@ -56,7 +56,12 @@
         serverSide: true,
         pagingType: 'full_numbers',
         regex: false,
-        columnDefs: [{ orderable: false, targets: 1 }],
+        // columnDefs: [{
+        //   targets: 0,
+        //   createdCell: function (td, cellData, rowData, row, col) {
+        //     $(td).html("<a href='users>")
+        //   }
+        // }],
         ajax: {
           url: '/users.json',
           data: function(d) {
@@ -66,7 +71,7 @@
             d.columns[2].search.value = $('#constituency-search').val();
           },
           dataSrc: function(json) {
-            // console.log(json);
+            console.log(json);
             json.recordsTotal = json.total_records;
             json.recordsFiltered = json.meta.total_count;
             return json.users;
@@ -76,7 +81,10 @@
           },
         },
         columns: [
-          { data: 'name' },
+          { data: 'name', render: function(data, type, row) {
+              return `<a href="/users/${row._id}">${data}</a>`;
+            } 
+          },
           { data: 'gender' },
           { data: 'constituency_id' }
         ],

@@ -28,7 +28,13 @@ class UsersController < ApplicationController
     respond_to do |format|
       format.html
       # format.json { render json: users_data }
-      format.json { render json: { users: @users, meta: pagination_meta(@users), total_records: total_records } }
+      format.json {
+        render json: {
+          users: @users.map { |user| user.as_json.merge(link: user_path(user)) },
+          meta: pagination_meta(@users),
+          total_records: total_records 
+        }
+      }
     end
   end
 
@@ -39,10 +45,9 @@ class UsersController < ApplicationController
 
   # GET /users/1
   def show
-    @constituency = @user.belongs_to_constituency
-
     respond_to do |format|
-      format.json { render json: { user: @user, constituency: @constituency } }
+      format.html
+      format.json { render json: { user: set_user, voter_count: voter_count_in_constituency(set_user['constituency_id']) } }
     end
   end
 
@@ -81,6 +86,10 @@ class UsersController < ApplicationController
   # Only allow a list of trusted parameters through.
   def user_params
     params.require(:user).permit(:name)
+  end
+
+  def voter_count_in_constituency(constituency_id)
+    Constituency.where(constituency_id: constituency_id)['voters']
   end
 
   def users_data

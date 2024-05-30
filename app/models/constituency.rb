@@ -22,4 +22,8 @@ class Constituency
 
   # Indexes
   index({ constituency_id: 1 }, { unique: true, name: 'constituency_id_index' })
+
+  def voter_count
+    self.voters
+  end
 end
