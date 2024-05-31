@@ -67,14 +67,6 @@ class ConstituenciesController < ApplicationController
     @constituency.destroy!
   end
 
-  def get_voter_count
-    @constituency.voters
-  end
-
-  def get_candidate_count
-    @constituency.candidate_count
-  end
-
   private
 
   # Use callbacks to share common setup or constraints between actions.

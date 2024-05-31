@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: %i[ show update destroy ]
+  before_action :set_user, only: %i[show edit update destroy]
 
   # GET /users
   def index
@@ -32,7 +32,7 @@ class UsersController < ApplicationController
         render json: {
           users: @users.map { |user| user.as_json.merge(link: user_path(user)) },
           meta: pagination_meta(@users),
-          total_records: total_records 
+          total_records: total_records
         }
       }
     end
@@ -43,37 +43,59 @@ class UsersController < ApplicationController
     render json: genders
   end
 
+  def new
+    @user = User.new
+  end
+
   # GET /users/1
   def show
+    constituency_id = set_user.constituency_id
+    # Rails.logger.debug "constituency_id #{constituency_id}"
+    @voters = Constituency.find_by(constituency_id: constituency_id)&.voters || 0
+    # Rails.logger.debug "voter count #{@voters}"
     respond_to do |format|
-      format.html
-      format.json { render json: { user: set_user, voter_count: voter_count_in_constituency(set_user['constituency_id']) } }
+      format.html # show.html.erb
+      format.json { render json: { voter_count: @voters } }
     end
   end
 
   # POST /users
   def create
-    @user = user.new(user_params)
+    @user = User.new(user_params)
 
     if @user.save
-      render json: @user, status: :created, location: @user
+      flash[:notice] = 'User was created successfully.'
+      redirect_to @user
+      # render json: @user, status: :created, location: @user
     else
-      render json: @user.errors, status: :unprocessable_entity
+      render 'new', status: :unprocessable_identity
     end
   end
 
   # PATCH/PUT /users/1
   def update
-    if @user.update(user_params)
-      render json: @user
+    # puts "user_params = #{user_params}"
+    # puts @user
+    constituency_id = user_params[:constituency_id]
+    if Constituency.find_by(constituency_id: constituency_id.to_i).present?
+      if @user.update(user_params)
+        flash[:notice] = 'User was updated successfully.'
+        redirect_to @user
+      else
+        flash[:alert] = 'There was an error updating the user.'
+        render :edit
+      end
     else
-      render json: @user.errors, status: :unprocessable_entity
+      flash[:alert] = 'Invalid constituency ID.'
+      render :edit
     end
   end
 
   # DELETE /users/1
   def destroy
-    @user.destroy!
+    @user.destroy
+    flash[:notice] = 'User was deleted successfully.'
+    redirect_to users_path
   end
 
   private
@@ -85,11 +107,7 @@ class UsersController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def user_params
-    params.require(:user).permit(:name)
-  end
-
-  def voter_count_in_constituency(constituency_id)
-    Constituency.where(constituency_id: constituency_id)['voters']
+    params.require(:user).permit(:id, :name, :gender, :constituency_id)
   end
 
   def users_data

@@ -1,17 +1,37 @@
-<%= form_with(model: user) do |form| %>
-  <% if user.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(user.errors.count, "error") %> prohibited this user from being saved:</h2>
+<%= form_with(model: @user, local: true) do |f| %>
+  
+  <p>
+    <%= f.label :name %><br/>
+    <%= f.text_field :name %>
+  </p>
 
-      <ul>
-        <% user.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+  <p>Gender</p>
+  <p>
+    <%= f.radio_button :gender, "Male" %>
+    <%= f.label :gender_male, "Male" %>
+    <%= f.radio_button :gender, "Female" %>
+    <%= f.label :gender_female, "Female" %>
+    <%= f.radio_button :gender, "O" %>
+    <%= f.label :gender_o, "O" %>
+  </p>
+
+  <p>
+    <%= f.label :constituency_id %><br/>
+    <%= f.text_area :constituency_id %>
+  </p>
 
   <div>
-    <%= form.submit %>
+    <%= f.submit %>
+  </div>
+<% end %>
+<% if user.errors.any? %>
+  <div style="color: red">
+    <h2><%= pluralize(user.errors.count, "error") %> prohibited this user from being saved:</h2>
+
+    <ul>
+      <% user.errors.each do |error| %>
+        <li><%= error.full_message %></li>
+      <% end %>
+    </ul>
   </div>
 <% end %>

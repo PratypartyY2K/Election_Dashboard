@@ -1,15 +1,63 @@
 <p style="color: green"><%= notice %></p>
 
 <%= render @user %>
-<p>Name: <%= @user.name %></p>
-<p>User ID: <%= @user.id %></p>
-<p>Belongs to Constituency: <%= @user.constituency_id%></p>
-<p>Voter count: <%= voter_count %></p>
-<p></p>
-
+<%= puts "User show: #{@user}" %>
+<div>
+  <strong>User ID</strong>
+  <p id="user_id"><%= @user.id %></p>
+</div>
+<div>
+  <strong>User Name</strong> 
+  <p id="user_name"><%= @user.name %></p>
+</div>
+<div>
+  <strong>Gender</strong>
+  <p id="user_gender"><%= @user.gender %></p>
+</div>
+<div>
+  <strong>Constituency ID user belongs to</strong>
+  <p id="user_constituency"><%= @user.constituency_id%></p>
+</div>
+<div>
+  <strong>Number of vouters in the Constituency</strong>
+  <p id="user_constituency_voter_count"><%= @voter_count %></p>
+</div>
+<br/>
 <div>
   <%= link_to "Edit this user", edit_user_path(@user) %> |
   <%= link_to "Back to users", users_path %>
 
-  <%= button_to "Destroy this user", @user, method: :delete %>
+  <%= button_to "Destroy this user", user_path(@user), method: :delete, data: { "turbo-method": :delete, turbo_confirm: 'Are you sure?' } %>
 </div>
+
+<script>
+  // $(document).ready(function() {
+  //   let voter_count = document.getElementById('user_constituency_voter_count');
+  //   $.ajax({
+  //     url: '/users/<%= @user.id %>.json',
+  //     type: "GET",
+  //     success: function(data) {
+  //       voter_count.textContent = data.voter_count
+  //     },
+  //     error: function() {
+  //       console.log("error with ajax");
+  //     }
+  //   })
+  // })
+  document.addEventListener('DOMContentLoaded', function() {
+    let voterCountElement = document.getElementById('user_constituency_voter_count');
+    fetch('/users/<%= @user.id %>.json')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        voterCountElement.textContent = data.voter_count;
+      })
+      .catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
+      });
+  });
+</script>

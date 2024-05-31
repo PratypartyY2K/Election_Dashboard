@@ -20,10 +20,12 @@
   </style>
 </head>
 <body>
+  <p> <%= link_to 'Return to Home Page', root_path %> </p>
+  <p style="color: green"><%= notice %></p>
   <h1> Users Table </h1>
-  <h3> Press the Search button to see results after entering filters </h3>
-  <p> <button id="search-button">Search</button> </p>
-
+  <h2> Press the <button id="search-button">Search</button> button to see results after entering filters </h2>
+  <p> <%= link_to 'Create New User', new_user_path %>
+  <br/>
   <table id="users-table" class="display" style="width:100%">
     <thead>
       <tr>

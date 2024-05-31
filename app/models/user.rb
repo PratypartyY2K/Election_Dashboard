@@ -11,5 +11,5 @@ class User
   field :constituency_id, type: Integer
 
   # Associations
-  belongs_to :constituency, class_name: 'Constituency', foreign_key: 'constituency_id'
+  has_one :constituency, class_name: 'Constituency', foreign_key: 'constituency_id'
 end
