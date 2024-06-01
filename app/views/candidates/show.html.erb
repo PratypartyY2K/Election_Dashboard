@@ -75,7 +75,6 @@
 	        return response.json();
 	      })
 	      .then(data => {
-          console.log(data);
           candidateID.textContent = data.candidate._id;
           candidateName.textContent = data.candidate.candidate_name;
           candidateType.textContent = data.candidate.candidate_type;

@@ -45,7 +45,6 @@
             d.columns[1].search.value = $('#gender-select').val();
           },
           dataSrc: function(json) {
-            // console.log(json);
             json.recordsTotal = json.total_records;
             json.recordsFiltered = json.meta.total_count;
             return json.candidates;
@@ -91,9 +90,6 @@
       })
       // Handle search button click
       $('#search-button').on('click', function() {
-        // console.log("Second call!");
-        // console.log("Name: ", $('#name-search').val());
-        // console.log("Gender: ", $('#gender-select').val());
         table.ajax.reload();
       });
       

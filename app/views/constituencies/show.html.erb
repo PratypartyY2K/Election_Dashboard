@@ -68,7 +68,6 @@
 	        return response.json();
 	      })
 	      .then(data => {
-          console.log(data);
           constituencyID.textContent = data.constituency.constituency_id
           constituencyName.textContent = data.constituency.constituency_name
           constituencyType.textContent = data.constituency.constituency_type

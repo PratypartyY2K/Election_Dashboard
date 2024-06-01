@@ -47,7 +47,6 @@
         return response.json();
       })
       .then(data => {
-        // console.log(data);
         userID.textContent = data.user._id;
         userName.textContent = data.user.name
         userGender.textContent = data.user.gender
