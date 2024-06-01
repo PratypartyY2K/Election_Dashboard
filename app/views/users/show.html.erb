@@ -1,7 +1,7 @@
 <p style="color: green"><%= notice %></p>
 
 <%= render @user %>
-<%= puts "User show: #{@user}" %>
+
 <div>
   <strong>User ID</strong>
   <p id="user_id"><%= @user.id %></p>
@@ -19,7 +19,7 @@
   <p id="user_constituency"><%= @user.constituency_id%></p>
 </div>
 <div>
-  <strong>Number of vouters in the Constituency</strong>
+  <strong>Number of voters in the Constituency</strong>
   <p id="user_constituency_voter_count"><%= @voter_count %></p>
 </div>
 <br/>

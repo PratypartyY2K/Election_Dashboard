@@ -4,25 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Candidates</title>
-  <style>
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    th, td {
-      padding: 8px;
-      text-align: left;
-    }
-    .filters th {
-      padding: 4px 8px;
-    }
-  </style>
 </head>
 <body>
+  <p> <%= link_to 'Return to Home Page', root_path %> </p>
+  <p style="color: green"><%= notice %></p>
   <h1> Candidates Table </h1>
-  <h3> Press the Search button to see results after entering filters </h3>
-  <p> <button id="search-button">Search</button> </p>
+  <h2> Press the <button id="search-button">Search</button> button to see results after entering filters </h2>
 
   <table id="candidates-table" class="display" style="width:100%">
     <thead>
@@ -45,8 +32,8 @@
   <script>
     $(document).ready(function() {
       console.log("First call");
-      $( ":text" ) .val('');
-      var table = $('#candidates-table').DataTable({
+      $(":text").val('');
+      const table = $('#candidates-table').DataTable({
         orderCellsTop: true,
         pagingType: 'full_numbers',
         searchable: false,
@@ -54,7 +41,6 @@
         processing: true,
         serverSide: true,
         regex: false,
-        columnDefs: [{ orderable: false, targets: 1 }],
         ajax: {
           url: '/candidates.json',
           data: function(d) {
@@ -63,7 +49,7 @@
             d.columns[1].search.value = $('#gender-select').val();
           },
           dataSrc: function(json) {
-            console.log(json);
+            // console.log(json);
             json.recordsTotal = json.total_records;
             json.recordsFiltered = json.meta.total_count;
             return json.candidates;
@@ -73,11 +59,13 @@
           },
         },
         columns: [
-          { data: 'candidate_name' },
+          { data: 'candidate_name', render: function(data, type, row) { // Hyperlink to /users/:id
+              return `<a href="/candidates/${row._id}">${data}</a>`; },
+          },
           { data: 'sex' },
         ],
         pageLength: 10, // default page length
-        lengthMenu: [[5, 10, 15], [5, 10, 15]], // dropdown options
+        lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]], // dropdown options
         initComplete: function () {
           // Fetch and populate gender options
           $.ajax({
@@ -95,15 +83,25 @@
           });
         },
       });
+      // Handle user pressed enter to filter data
+      $('input[type=text]').keydown(function(e) {
+        if (e.key === "Enter") {
+          table.ajax.reload();
+        }
+      });
+      // Apply filter after user changes gender dropdown
+      $('#gender-select').change(function() {
+        table.ajax.reload();
+      })
       // Handle search button click
       $('#search-button').on('click', function() {
-        console.log("Second call!");
-        console.log("Name: ", $('#name-search').val());
-        console.log("Gender: ", $('#gender-select').val());
+        // console.log("Second call!");
+        // console.log("Name: ", $('#name-search').val());
+        // console.log("Gender: ", $('#gender-select').val());
         table.ajax.reload();
       });
       
-      $('#candidate-table_filter').hide();
+      $('#candidates-table_filter').hide();
     });
   </script>
 </body>

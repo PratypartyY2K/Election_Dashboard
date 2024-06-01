@@ -1,5 +1,5 @@
 class CandidatesController < ApplicationController
-  before_action :set_candidate, only: %i[ show update destroy ]
+  before_action :set_candidate, only: %i[show edit update destroy]
 
   # GET /candidates
   def index
@@ -55,32 +55,65 @@ class CandidatesController < ApplicationController
 
   # GET /candidates/1
   def show
-    render json: @candidate
+    party_id = set_candidate.party_id
+    party_name = Party.find_by(party_id: party_id)&.party || "Independent candidate"
+    respond_to do |format|
+      format.html
+      format.json { render json: { partyName: party_name } }
+    end
+    # render json: @candidate
   end
+
+  # def new
+  #   @candidate = Candidate.new
+  # end
 
   # POST /candidates
-  def create
-    @candidate = candidate.new(candidate_params)
+  # def create
+  #   constituency_id = candidate_params[:constituency_id].to_i
+  #   party_id = candidate_params[:party_id].to_i
+  #   # puts Constituency.find_by(constituency_id: constituency_id).present? && Party.find_by(party_id: party_id.to_i).present?
+  #   if Constituency.find_by(constituency_id: constituency_id).present? && Party.find_by(party_id: party_id).present?
+  #     @candidate = Candidate.new(candidate_params)
 
-    if @candidate.save
-      render json: @candidate, status: :created, location: @candidate
-    else
-      render json: @candidate.errors, status: :unprocessable_entity
-    end
-  end
+  #     if @candidate.save
+  #       flash[:notice] = 'Candidate was created successfully.'
+  #       redirect_to action: 'show', id: @candidate.id
+  #       # render json: @candidate, status: :created, location: @candidate
+  #     else
+  #       flash[:alert] = 'There was an error creating a candidate.'
+  #       render :new
+  #     end
+  #   else
+  #     flash[:alert] = 'Invalid constituency ID or party ID.'
+  #     render :new
+  #   end
+  # end
 
   # PATCH/PUT /candidates/1
   def update
+    # constituency_id = candidate_params[:constituency_id].to_i
+    # party_name = candidate_params[:party].to_i
+
+    # if Constituency.find_by(constituency_id: constituency_id).present? && Party.find_by(party_id: party_id).present?
     if @candidate.update(candidate_params)
-      render json: @candidate
+      flash[:notice] = 'Candidate was updated successfully.'
+      redirect_to @candidate
     else
-      render json: @candidate.errors, status: :unprocessable_entity
+      flash[:alert] = 'There was an error updating the candidate.'
+      render :edit
     end
+    # else
+    #   flash[:alert] = 'Invalid constituency ID or party ID.'
+    #   render :edit
+    # end
   end
 
   # DELETE /candidates/1
   def destroy
-    @candidate.destroy!
+    @candidate.destroy
+    flash[:notice] = 'Candidate was deleted successfully.'
+    redirect_to candidates_path
   end
 
   private
@@ -92,6 +125,7 @@ class CandidatesController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def candidate_params
-    params.require(:candidate).permit(:name)
+    params.require(:candidate).permit(:id, :candidate_name, :sex, :constituency_id, :party_id, :age)
   end
+
 end

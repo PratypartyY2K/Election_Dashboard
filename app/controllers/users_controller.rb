@@ -14,27 +14,38 @@ class UsersController < ApplicationController
     # @users = User.order(sort_column => sort_direction).page(page).skip(offset).per(limit)
     sort_column = params.dig(:columns, params.dig(:order, '0', :column).to_s, :data) || 'name'
     sort_direction = params.dig(:order, '0', :dir) || 'asc'
-    page = params[:length].to_i.nonzero? ? params[:start].to_i / params[:length].to_i + 1 : 1
-    limit = params[:length].to_i.positive? ? params[:length].to_i : 10
+    page = params[:start].to_i / (params[:length].to_i + 1)
+    limit = params[:length].to_i
 
     filters = {}
-    filters[:name] = /#{params.dig(:columns, '0', :search, :value)}/i unless params.dig(:columns, '0', :search, :value).blank?
-    filters[:gender] = params.dig(:columns, '1', :search, :value) unless params.dig(:columns, '1', :search, :value).blank?
-    filters[:constituency_id] = params.dig(:columns, '2', :search, :value).to_i unless params.dig(:columns, '2', :search, :value).blank?
+    search_columns = { '0' => :name, '1' => :gender, '2' => :constituency_id }
 
-    @users = User.where(filters).order("#{sort_column} #{sort_direction}").page(page).per(limit)
+    search_columns.each do |index, field|
+      search_value = params.dig(:columns, index, :search, :value)
+      next if search_value.blank?
+
+      filters[field] = if field == :name
+                         /#{search_value}/i
+                       else
+                         field == :constituency_id ? search_value.to_i : search_value
+                       end
+    end
+
+    @users = User.where(filters).order_by(sort_column => sort_direction).page(page).per(limit)
+
     total_records = User.count
     # total_records = User.count
     respond_to do |format|
       format.html
       # format.json { render json: users_data }
-      format.json {
+      # .map { |user| user.as_json.merge(link: user_path(user)) }
+      format.json do
         render json: {
-          users: @users.map { |user| user.as_json.merge(link: user_path(user)) },
+          users: @users,
           meta: pagination_meta(@users),
-          total_records: total_records
+          total_records:
         }
-      }
+      end
     end
   end
 
@@ -51,7 +62,7 @@ class UsersController < ApplicationController
   def show
     constituency_id = set_user.constituency_id
     # Rails.logger.debug "constituency_id #{constituency_id}"
-    @voters = Constituency.find_by(constituency_id: constituency_id)&.voters || 0
+    @voters = Constituency.find_by(constituency_id:)&.voters || 0
     # Rails.logger.debug "voter count #{@voters}"
     respond_to do |format|
       format.html # show.html.erb

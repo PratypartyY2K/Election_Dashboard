@@ -13,3 +13,36 @@
  *= require_tree .
  *= require_self
  */
+
+.display table {
+	width: 100%;
+	border-collapse: collapse;
+ 	margin-top: 20px;
+}
+
+th, td {
+  	padding: 8px;
+  	text-align: left;
+}
+
+.filters th {
+	padding: 4px 8px;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a {
+    text-decoration: none;
+    color: blueviolet;
+}
+
+.display input, .display select {
+	width: 100%;
+}
+
+.information p {
+	display: inline-block;
+	color: purple;
+}

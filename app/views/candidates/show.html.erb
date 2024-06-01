@@ -2,9 +2,73 @@
 
 <%= render @candidate %>
 
+<div class="information">
+	<h1> Candidate Information </h1>
+
+	<div>
+	  <strong>ID</strong>
+	  <p id="candidate_id"><%= @candidate.id %></p>
+	</div>
+	<div>
+	  <strong>Name</strong>
+	  <p id="candidate_name"><%= @candidate.candidate_name %></p>
+	</div>
+	<div>
+	  <strong>Type</strong>
+	  <p id="candidate_id"><%= @candidate.candidate_type %></p>
+	</div>
+	<div>
+	  <strong>Gender</strong>
+	  <p id="candidate_gender"><%= @candidate.sex %></p>
+	</div>
+	<div>
+	  <strong>Age</strong>
+	  <p id="candidate_id"><%= @candidate.age %></p>
+	</div>
+	<div>
+	  <strong>Constituency ID</strong>
+	  <p id="constituency_id"><%= @candidate.constituency_id %></p>
+	</div>
+	<div>
+	  <strong>Party Name</strong>
+	  <p id="candidate_party_name"></p>
+	</div>
+	<div>
+	  <strong>Position obtained</strong>
+	  <p id="candidate_party_name"><%= @candidate.position %></p>
+	</div>
+	<div>
+	  <strong>Votes obtained</strong>
+	  <p id="candidate_party_name"><%= @candidate.votes_obtained %></p>
+	</div>
+	<div>
+	  <strong>Vote Share Percentage</strong>
+	  <p id="candidate_id"><%= @candidate.vote_share_percentage %> %</p>
+	</div>
+</div>
+
 <div>
   <%= link_to "Edit this candidate", edit_candidate_path(@candidate) %> |
   <%= link_to "Back to candidates", candidates_path %>
 
-  <%= button_to "Destroy this candidate", @candidate, method: :delete %>
+  <%= button_to "Destroy this candidate", @candidate, method: :delete, data: { "turbo-method": :delete, turbo_confirm: 'Are you sure?' }%>
 </div>
+
+<script>
+	document.addEventListener('DOMContentLoaded', function() {
+	    let candidatePartyName = document.getElementById('candidate_party_name');
+	    fetch('/candidates/<%= @candidate.id %>.json')
+	      .then(response => {
+	        if (!response.ok) {
+	          throw new Error('Network response was not ok');
+	        }
+	        return response.json();
+	      })
+	      .then(data => {
+	        candidatePartyName.textContent = data.partyName;
+	      })
+	      .catch(error => {
+	        console.error('There was a problem with the fetch operation:', error);
+	      });
+  	});
+</script>

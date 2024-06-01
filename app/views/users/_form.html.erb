@@ -1,12 +1,11 @@
 <%= form_with(model: @user, local: true) do |f| %>
   
   <p>
-    <%= f.label :name %><br/>
+    <%= f.label :name, "User Name" %><br/>
     <%= f.text_field :name %>
   </p>
 
-  <p>Gender</p>
-  <p>
+  <p>Gender
     <%= f.radio_button :gender, "Male" %>
     <%= f.label :gender_male, "Male" %>
     <%= f.radio_button :gender, "Female" %>
@@ -16,8 +15,8 @@
   </p>
 
   <p>
-    <%= f.label :constituency_id %><br/>
-    <%= f.text_area :constituency_id %>
+    <%= f.label :constituency_id, "Constituency ID" %><br/>
+    <%= f.text_field :constituency_id %>
   </p>
 
   <div>

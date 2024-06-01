@@ -4,20 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Users</title>
-  <style>
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    th, td {
-      padding: 8px;
-      text-align: left;
-    }
-    .filters th {
-      padding: 4px 8px;
-    }
-  </style>
 </head>
 <body>
   <p> <%= link_to 'Return to Home Page', root_path %> </p>
@@ -26,7 +12,7 @@
   <h2> Press the <button id="search-button">Search</button> button to see results after entering filters </h2>
   <p> <%= link_to 'Create New User', new_user_path %>
   <br/>
-  <table id="users-table" class="display" style="width:100%">
+  <table id="users-table" class="display" style="width:100%" display="hidden">
     <thead>
       <tr>
         <th>Name</th>
@@ -49,8 +35,9 @@
   <script>
     $(document).ready(function() {
       console.log("First call");
-      $( ":text" ) .val('');
-      var table = $('#users-table').DataTable({
+      $(":text" ).val('');
+      const table = $('#users-table').DataTable({
+        stateSave: true,
         orderCellsTop: true,
         searchable: false,
         deferRender: true,
@@ -58,12 +45,6 @@
         serverSide: true,
         pagingType: 'full_numbers',
         regex: false,
-        // columnDefs: [{
-        //   targets: 0,
-        //   createdCell: function (td, cellData, rowData, row, col) {
-        //     $(td).html("<a href='users>")
-        //   }
-        // }],
         ajax: {
           url: '/users.json',
           data: function(d) {
@@ -73,7 +54,7 @@
             d.columns[2].search.value = $('#constituency-search').val();
           },
           dataSrc: function(json) {
-            console.log(json);
+            // console.log(json);
             json.recordsTotal = json.total_records;
             json.recordsFiltered = json.meta.total_count;
             return json.users;
@@ -83,7 +64,7 @@
           },
         },
         columns: [
-          { data: 'name', render: function(data, type, row) {
+          { data: 'name', render: function(data, type, row) { // Hyperlink to /users/:id
               return `<a href="/users/${row._id}">${data}</a>`;
             } 
           },
@@ -91,7 +72,7 @@
           { data: 'constituency_id' }
         ],
         pageLength: 10, // default page length
-        lengthMenu: [[5, 10, 15], [5, 10, 15]], // dropdown options
+        lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]], // dropdown options
         initComplete: function () {
           // Fetch and populate gender options
           $.ajax({
@@ -109,12 +90,28 @@
           });
         },
       });
+      $("#users-table").show();
+      // Handle user pressed enter to filter data
+      $('input[type=text]').keydown(function(e) {
+        if (e.key === "Enter") {
+          // Pressed enter
+          // console.log("Apply filters!");
+          // console.log("Name: ", $('#name-search').val());
+          // console.log("Gender: ", $('#gender-select').val());
+          // console.log("Constituency ID: ", $('#constituency-search').val());
+          table.ajax.reload();
+        }
+      });
+      // Apply filter after user changes gender dropdown
+      $('#gender-select').change(function() {
+        table.ajax.reload();
+      })
       // Handle search button click
       $('#search-button').on('click', function() {
-        console.log("Second call!");
-        console.log("Name: ", $('#name-search').val());
-        console.log("Gender: ", $('#gender-select').val());
-        console.log("Constituency ID: ", $('#constituency-search').val());
+        // console.log("Apply filters!");
+        // console.log("Name: ", $('#name-search').val());
+        // console.log("Gender: ", $('#gender-select').val());
+        // console.log("Constituency ID: ", $('#constituency-search').val());
         table.ajax.reload();
         // $.ajax({
         //   url: '/users.json',
