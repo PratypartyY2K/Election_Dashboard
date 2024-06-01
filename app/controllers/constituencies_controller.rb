@@ -1,5 +1,5 @@
 class ConstituenciesController < ApplicationController
-  before_action :set_constituency, only: %i[ show update destroy ]
+  before_action :set_constituency, only: %i[show destroy]
 
   # GET /constituencies
   def index
@@ -14,21 +14,26 @@ class ConstituenciesController < ApplicationController
     # render json: @constituencies, meta: pagination_meta(@constituencies)
     sort_column = params.dig(:columns, params.dig(:order, '0', :column).to_s, :data) || 'constituency_id'
     sort_direction = params.dig(:order, '0', :dir) || 'desc'
-    page = params[:length].to_i.nonzero? ? params[:start].to_i / params[:length].to_i + 1 : 1
-    limit = params[:length].to_i.positive? ? params[:length].to_i : 10
+    page = params[:start].to_i / (params[:length].to_i + 1)
+    limit = params[:length].to_i
 
     filters = {}
-    filters[:constituency_id] = params.dig(:columns, '0', :search, :value) unless params.dig(:columns, '0', :search, :value).blank?
-    filters[:constituency_name] = params.dig(:columns, '1', :search, :value) unless params.dig(:columns, '1', :search, :value).blank?
-    filters[:constituency_type] = params.dig(:columns, '2', :search, :value) unless params.dig(:columns, '2', :search, :value).blank?
+    filters[:constituency_id] = params.dig(:columns, '0', :search, :value) unless params.dig(:columns, '0', :search,
+                                                                                             :value).blank?
+    filters[:constituency_name] = params.dig(:columns, '1', :search, :value) unless params.dig(:columns, '1', :search,
+                                                                                               :value).blank?
+    filters[:constituency_type] = params.dig(:columns, '2', :search, :value) unless params.dig(:columns, '2', :search,
+                                                                                               :value).blank?
 
-    @constituencies = Constituency.where(filters).order("#{sort_column} #{sort_direction}").page(page).per(limit)
+    @constituencies = Constituency.where(filters).order_by("#{sort_column} #{sort_direction}").page(page).per(limit)
     total_records = Constituency.count
     # total_records = Constituency.count
     respond_to do |format|
       format.html
       # format.json { render json: constituencies_data }
-      format.json { render json: { constituencies: @constituencies, meta: pagination_meta(@constituencies), total_records: total_records } }
+      format.json do
+        render json: { constituencies: @constituencies, meta: pagination_meta(@constituencies), total_records: }
+      end
     end
   end
 
@@ -39,32 +44,37 @@ class ConstituenciesController < ApplicationController
 
   # GET /constituencies/1
   def show
-    render json: @constituency
+    respond_to do |format|
+      format.html
+      format.json { render json: { constituency: @constituency } }
+    end
   end
 
   # POST /constituencies
-  def create
-    @constituency = constituency.new(constituency_params)
+  # def create
+  #   @constituency = constituency.new(constituency_params)
 
-    if @constituency.save
-      render json: @constituency, status: :created, location: @constituency
-    else
-      render json: @constituency.errors, status: :unprocessable_entity
-    end
-  end
+  #   if @constituency.save
+  #     render json: @constituency, status: :created, location: @constituency
+  #   else
+  #     render json: @constituency.errors, status: :unprocessable_entity
+  #   end
+  # end
 
   # PATCH/PUT /constituencies/1
-  def update
-    if @constituency.update(constituency_params)
-      render json: @constituency
-    else
-      render json: @constituency.errors, status: :unprocessable_entity
-    end
-  end
+  # def update
+  #   if @constituency.update(constituency_params)
+  #     render json: @constituency
+  #   else
+  #     render json: @constituency.errors, status: :unprocessable_entity
+  #   end
+  # end
 
   # DELETE /constituencies/1
   def destroy
-    @constituency.destroy!
+    @constituency.destroy
+    flash[:notice] = 'Constituency was deleted successfully.'
+    redirect_to constituencies_path
   end
 
   private

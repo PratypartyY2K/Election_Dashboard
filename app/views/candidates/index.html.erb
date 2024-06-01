@@ -59,7 +59,7 @@
           },
         },
         columns: [
-          { data: 'candidate_name', render: function(data, type, row) { // Hyperlink to /users/:id
+          { data: 'candidate_name', render: function(data, type, row) { // Hyperlink to /candidates/:id
               return `<a href="/candidates/${row._id}">${data}</a>`; },
           },
           { data: 'sex' },

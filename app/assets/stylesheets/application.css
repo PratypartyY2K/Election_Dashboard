@@ -43,6 +43,6 @@ a {
 }
 
 .information p {
-	display: inline-block;
+	/* display: inline-block; */
 	color: purple;
 }

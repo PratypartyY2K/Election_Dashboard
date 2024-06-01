@@ -31,8 +31,8 @@ class CandidatesController < ApplicationController
     # render json: { candidates: candidates_with_associations }, meta: pagination_meta(@candidates)
     sort_column = params.dig(:columns, params.dig(:order, '0', :column).to_s, :data) || 'candidate_name'
     sort_direction = params.dig(:order, '0', :dir) || 'asc'
-    page = params[:length].to_i.nonzero? ? params[:start].to_i / params[:length].to_i + 1 : 1
-    limit = params[:length].to_i.positive? ? params[:length].to_i : 10
+    page = params[:start].to_i / (params[:length].to_i + 1)
+    limit = params[:length].to_i
 
     filters = {}
     filters[:candidate_name] = /#{params.dig(:columns, '0', :search, :value)}/i unless params.dig(:columns, '0', :search, :value).blank?

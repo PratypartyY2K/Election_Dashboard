@@ -1,0 +1,82 @@
+<p style="color: green"><%= notice %></p>
+
+<div class="information">
+	<h1> Constituency Information </h1>
+
+	<div>
+	  <strong>ID</strong>
+	  <p id="constituency_id"></p>
+	</div>
+	<div>
+	  <strong>Name</strong>
+	  <p id="constituency_name"></p>
+	</div>
+	<div>
+	  <strong>Type</strong>
+	  <p id="constituency_type"></p>
+	</div>
+	<div>
+	  <strong>District Name</strong>
+	  <p id="constituency_district"></p>
+	</div>
+	<div>
+	  <strong>Voter count</strong>
+	  <p id="constituency_voters"></p>
+	</div>
+	<div>
+	  <strong>Actual votes obtained</strong>
+	  <p id="constituency_actual_voters"></p>
+	</div>
+	<div>
+	  <strong>Sub Region</strong>
+	  <p id="constituency_sub_region"></p>
+	</div>
+	<div>
+	  <strong>Candidate Count</strong>
+	  <p id="constituency_cc"></p>
+	</div>
+	<div>
+	  <strong>Turnout Percentage</strong>
+	  <p id="constituency_tp"></p>
+	</div>
+</div>
+
+<div>
+  <%= link_to "Back to constituency table", constituencies_path %> | 
+  <%= button_to "Destroy this constituency", @constituency, method: :delete, data: { "turbo-method": :delete, turbo_confirm: 'Are you sure?' }%>
+</div>
+<script>
+	document.addEventListener('DOMContentLoaded', function() {
+	    let constituencyID = document.getElementById('constituency_id');
+      let constituencyName = document.getElementById('constituency_name');
+      let constituencyType = document.getElementById('constituency_type');
+      let constituencyDistrict = document.getElementById('constituency_district');
+      let constituencyVC = document.getElementById('constituency_voters');
+      let constituencyACO = document.getElementById('constituency_actual_voters');
+      let constituencySubRegion = document.getElementById('constituency_sub_region');
+      let constituencyCanCount = document.getElementById('constituency_cc');
+      let constituencyTurnoutPer = document.getElementById('constituency_tp');
+	    fetch('/constituencies/<%= @constituency.id %>.json')
+	      .then(response => {
+	        if (!response.ok) {
+	          throw new Error('Network response was not ok');
+	        }
+	        return response.json();
+	      })
+	      .then(data => {
+          console.log(data);
+          constituencyID.textContent = data.constituency.constituency_id
+          constituencyName.textContent = data.constituency.constituency_name
+          constituencyType.textContent = data.constituency.constituency_type
+          constituencyDistrict.textContent = data.constituency.district_name
+          constituencyVC.textContent = data.constituency.voters
+          constituencyACO.textContent = data.constituency.valid_votes
+          constituencySubRegion.textContent = data.constituency.sub_region
+          constituencyCanCount.textContent = data.constituency.candidate_count
+          constituencyTurnoutPer.textContent = data.constituency.turnout_percentage + " %"
+	      })
+	      .catch(error => {
+	        console.error('There was a problem with the fetch operation:', error);
+	      });
+  	});
+</script>

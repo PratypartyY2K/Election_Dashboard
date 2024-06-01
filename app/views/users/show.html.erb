@@ -1,51 +1,39 @@
 <p style="color: green"><%= notice %></p>
 
-<%= render @user %>
-
 <div>
   <strong>User ID</strong>
-  <p id="user_id"><%= @user.id %></p>
+  <p id="user_id"></p>
 </div>
 <div>
   <strong>User Name</strong> 
-  <p id="user_name"><%= @user.name %></p>
+  <p id="user_name"></p>
 </div>
 <div>
   <strong>Gender</strong>
-  <p id="user_gender"><%= @user.gender %></p>
+  <p id="user_gender"></p>
 </div>
 <div>
   <strong>Constituency ID user belongs to</strong>
-  <p id="user_constituency"><%= @user.constituency_id%></p>
+  <p id="user_constituency"></p>
 </div>
 <div>
   <strong>Number of voters in the Constituency</strong>
-  <p id="user_constituency_voter_count"><%= @voter_count %></p>
+  <p id="user_constituency_voter_count"></p>
 </div>
 <br/>
 <div>
   <%= link_to "Edit this user", edit_user_path(@user) %> |
   <%= link_to "Back to users", users_path %>
-
-  <%= button_to "Destroy this user", user_path(@user), method: :delete, data: { "turbo-method": :delete, turbo_confirm: 'Are you sure?' } %>
+  <%= button_to "Destroy this user", user_path(@user), method: :delete %>
 </div>
 
 <script>
-  // $(document).ready(function() {
-  //   let voter_count = document.getElementById('user_constituency_voter_count');
-  //   $.ajax({
-  //     url: '/users/<%= @user.id %>.json',
-  //     type: "GET",
-  //     success: function(data) {
-  //       voter_count.textContent = data.voter_count
-  //     },
-  //     error: function() {
-  //       console.log("error with ajax");
-  //     }
-  //   })
-  // })
   document.addEventListener('DOMContentLoaded', function() {
     let voterCountElement = document.getElementById('user_constituency_voter_count');
+    let userID = document.getElementById('user_id');
+    let userName = document.getElementById('user_name');
+    let userGender = document.getElementById('user_gender');
+    let userConstituency = document.getElementById('user_constituency');
     fetch('/users/<%= @user.id %>.json')
       .then(response => {
         if (!response.ok) {
@@ -54,6 +42,11 @@
         return response.json();
       })
       .then(data => {
+        // console.log(data);
+        userID.textContent = data.user._id;
+        userName.textContent = data.user.name
+        userGender.textContent = data.user.gender
+        userConstituency.textContent = data.user.constituency_id;
         voterCountElement.textContent = data.voter_count;
       })
       .catch(error => {

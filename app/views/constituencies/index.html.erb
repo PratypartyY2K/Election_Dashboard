@@ -3,26 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Constituencys</title>
-  <style>
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    th, td {
-      padding: 8px;
-      text-align: left;
-    }
-    .filters th {
-      padding: 4px 8px;
-    }
-  </style>
+  <title>Constituency</title>
 </head>
 <body>
+  <p> <%= link_to 'Return to Home Page', root_path %> </p>
   <h1> Constituency Table </h1>
-  <h3> Press the Search button to see results after entering filters </h3>
-  <p> <button id="search-button">Search</button> </p>
+  <h3> Press the <button id="search-button">Search</button> button to see results after entering filters </h3>
 
   <table id="constituencies-table" class="display" style="width:100%">
     <thead>
@@ -78,12 +64,14 @@
         },
         columns: [
           { data: 'constituency_id' },
-          { data: 'constituency_name' },
+          { data: 'constituency_name', render: function(data, type, row) { // Hyperlink to /constituencies/:id
+              return `<a href="/constituencies/${row._id}">${data}</a>`; },
+          },
           { data: 'constituency_type' },
         ],
         pageLength: 10, // default page length
-        lengthMenu: [[5, 10, 15], [5, 10, 15]], // dropdown options
-        order: [[0, 'desc']],
+        lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]], // dropdown options
+        order: [[0, 'asc']],
         initComplete: function () {
           // Fetch and populate gender options
           $.ajax({
@@ -101,12 +89,20 @@
           });
         }
       });
+      $('input[type=text]').keydown(function(e) {
+        if (e.key === "Enter") {
+          table.ajax.reload();
+        }
+      });
+      $('#constituency-type-select').change(function() {
+        table.ajax.reload();
+      })
       // Handle search button click
       $('#search-button').on('click', function() {
-        console.log("Second call!");
-        console.log("Name: ", $('#constituency-name-search').val());
-        console.log("ID: ", $('#constituency-id-search').val());
-        console.log("Type: ", $('#constituency-type-select').val());
+        // console.log("Second call!");
+        // console.log("Name: ", $('#constituency-name-search').val());
+        // console.log("ID: ", $('#constituency-id-search').val());
+        // console.log("Type: ", $('#constituency-type-select').val());
         table.ajax.reload();
       });
       

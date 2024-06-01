@@ -66,7 +66,7 @@ class UsersController < ApplicationController
     # Rails.logger.debug "voter count #{@voters}"
     respond_to do |format|
       format.html # show.html.erb
-      format.json { render json: { voter_count: @voters } }
+      format.json { render json: { user: @user, voter_count: @voters } }
     end
   end
 

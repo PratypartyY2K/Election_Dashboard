@@ -3,26 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Partys</title>
-  <style>
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    th, td {
-      padding: 8px;
-      text-align: left;
-    }
-    .filters th {
-      padding: 4px 8px;
-    }
-  </style>
+  <title>Party</title>
 </head>
 <body>
+  <p> <%= link_to 'Return to Home Page', root_path %> </p>
   <h1> Party Table </h1>
-  <h3> Press the Search button to see results after entering filters </h3>
-  <p> <button id="search-button">Search</button> </p>
+  <h3> Press the <button id="search-button">Search</button> button to see results after entering filters </h3>
 
   <table id="parties-table" class="display" style="width:100%">
     <thead>
@@ -44,7 +30,7 @@
     $(document).ready(function() {
       console.log("First call");
       $( ":text" ).val('');
-      var table = $('#parties-table').DataTable({
+      const table = $('#parties-table').DataTable({
         orderCellsTop: true,
         pagingType: 'full_numbers',
         searchable: false,
@@ -77,11 +63,17 @@
         lengthMenu: [[5, 10, 15], [5, 10, 15]], // dropdown options
         order: [[0, 'desc']]
       });
+      // Hit enter to apply filter
+      $('input[type=text]').keydown(function(e) {
+        if (e.key === "Enter") {
+          table.ajax.reload();
+        }
+      });
       // Handle search button click
       $('#search-button').on('click', function() {
-        console.log("Second call!");
-        console.log("Name: ", $('#party-name-search').val());
-        console.log("ID: ", $('#party-id-search').val());
+        // console.log("Second call!");
+        // console.log("Name: ", $('#party-name-search').val());
+        // console.log("ID: ", $('#party-id-search').val());
         table.ajax.reload();
       });
       
