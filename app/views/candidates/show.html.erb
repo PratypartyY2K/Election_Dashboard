@@ -1,60 +1,72 @@
+<head>
+  <title> Candidate Information </title>
+</head>
 <p style="color: green"><%= notice %></p>
 
 <div class="information">
-	<h1> Candidate Information </h1>
+	<h2> Candidate Details </h2>
 
 	<div>
 	  <strong>ID</strong>
-	  <p id="candidate_id"><%= @candidate.id %></p>
+	  <p id="candidate_id"></p>
 	</div>
 	<div>
 	  <strong>Name</strong>
-	  <p id="candidate_name"><%= @candidate.candidate_name %></p>
+	  <p id="candidate_name"></p>
 	</div>
 	<div>
 	  <strong>Type</strong>
-	  <p id="candidate_id"><%= @candidate.candidate_type %></p>
+	  <p id="candidate_type"></p>
 	</div>
 	<div>
 	  <strong>Gender</strong>
-	  <p id="candidate_gender"><%= @candidate.sex %></p>
+	  <p id="candidate_gender"></p>
 	</div>
 	<div>
 	  <strong>Age</strong>
-	  <p id="candidate_id"><%= @candidate.age %></p>
+	  <p id="candidate_age"></p>
 	</div>
 	<div>
 	  <strong>Constituency ID</strong>
-	  <p id="candidate_constituency_id"><%= @candidate.constituency_id %></p>
+	  <p id="candidate_constituency_id"></p>
 	</div>
 	<div>
 	  <strong>Party Name</strong>
 	  <p id="candidate_party_name"></p>
 	</div>
 	<div>
-	  <strong>Position obtained</strong>
-	  <p id="candidate_party_name"><%= @candidate.position %></p>
+	  <strong>Position in Constituency</strong>
+	  <p id="candidate_position"></p>
 	</div>
 	<div>
 	  <strong>Votes obtained</strong>
-	  <p id="candidate_party_name"><%= @candidate.votes_obtained %></p>
+	  <p id="candidate_votes_obtained"></p>
 	</div>
 	<div>
 	  <strong>Vote Share Percentage</strong>
-	  <p id="candidate_id"><%= @candidate.vote_share_percentage %> %</p>
+	  <p id="candidate_vote_share_percentage"></p>
 	</div>
 </div>
 
 <div>
   <%= link_to "Edit this candidate", edit_candidate_path(@candidate) %> |
-  <%= link_to "Back to candidates", candidates_path %>
-
+  <%= link_to "Back to candidates", candidates_path %> |
+  <%= link_to 'Return to Home Page', root_path %>
   <%= button_to "Destroy this candidate", @candidate, method: :delete, data: { "turbo-method": :delete, turbo_confirm: 'Are you sure?' }%>
 </div>
 
 <script>
 	document.addEventListener('DOMContentLoaded', function() {
-	    let candidatePartyName = document.getElementById('candidate_party_name');
+	  let candidatePartyName = document.getElementById('candidate_party_name');
+      let candidateID = document.getElementById('candidate_id');
+      let candidateName= document.getElementById('candidate_name');
+      let candidateType = document.getElementById('candidate_type');
+      let candidateGender = document.getElementById('candidate_gender');
+      let candidateAge = document.getElementById('candidate_age');
+      let candidateConstituencyID = document.getElementById('candidate_constituency_id');
+      let candidatePosition = document.getElementById('candidate_position');
+      let candidateVotesObtained = document.getElementById('candidate_votes_obtained');
+      let candidateVoteSharePercentage = document.getElementById('candidate_vote_share_percentage');
 	    fetch('/candidates/<%= @candidate.id %>.json')
 	      .then(response => {
 	        if (!response.ok) {
@@ -63,6 +75,16 @@
 	        return response.json();
 	      })
 	      .then(data => {
+          console.log(data);
+          candidateID.textContent = data.candidate._id;
+          candidateName.textContent = data.candidate.candidate_name;
+          candidateType.textContent = data.candidate.candidate_type;
+          candidateGender.textContent = data.candidate.sex;
+          candidateAge.textContent = data.candidate.age;
+          candidateConstituencyID.textContent = data.candidate.constituency_id;
+          candidatePosition.textContent = data.candidate.position;
+          candidateVotesObtained.textContent = data.candidate.votes_obtained;
+          candidateVoteSharePercentage.textContent = data.candidate.vote_share_percentage + ' %';
 	        candidatePartyName.textContent = data.partyName;
 	      })
 	      .catch(error => {

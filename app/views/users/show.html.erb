@@ -1,29 +1,34 @@
+<head>
+  <title> User Information </title>
+</head>
 <p style="color: green"><%= notice %></p>
-
-<div>
-  <strong>User ID</strong>
-  <p id="user_id"></p>
+<div class="information">
+  <h2> User Details </h2>
+  <div>
+    <strong>User ID</strong>
+    <p id="user_id"></p>
+  </div>
+  <div>
+    <strong>User Name</strong> 
+    <p id="user_name"></p>
+  </div>
+  <div>
+    <strong>Gender</strong>
+    <p id="user_gender"></p>
+  </div>
+  <div>
+    <strong>Constituency ID user belongs to</strong>
+    <p id="user_constituency"></p>
+  </div>
+  <div>
+    <strong>Number of voters in the Constituency</strong>
+    <p id="user_constituency_voter_count"></p>
+  </div>
 </div>
-<div>
-  <strong>User Name</strong> 
-  <p id="user_name"></p>
-</div>
-<div>
-  <strong>Gender</strong>
-  <p id="user_gender"></p>
-</div>
-<div>
-  <strong>Constituency ID user belongs to</strong>
-  <p id="user_constituency"></p>
-</div>
-<div>
-  <strong>Number of voters in the Constituency</strong>
-  <p id="user_constituency_voter_count"></p>
-</div>
-<br/>
 <div>
   <%= link_to "Edit this user", edit_user_path(@user) %> |
-  <%= link_to "Back to users", users_path %>
+  <%= link_to "Back to users", users_path %> |
+  <%= link_to 'Return to Home Page', root_path %>
   <%= button_to "Destroy this user", user_path(@user), method: :delete %>
 </div>
 

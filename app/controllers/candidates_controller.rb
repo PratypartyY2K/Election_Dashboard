@@ -35,7 +35,8 @@ class CandidatesController < ApplicationController
     limit = params[:length].to_i
 
     filters = {}
-    filters[:candidate_name] = /#{params.dig(:columns, '0', :search, :value)}/i unless params.dig(:columns, '0', :search, :value).blank?
+    filters[:candidate_name] = /#{params.dig(:columns, '0', :search, :value)}/i unless params.dig(:columns, '0',
+                                                                                                  :search, :value).blank?
     filters[:sex] = params.dig(:columns, '1', :search, :value) unless params.dig(:columns, '1', :search, :value).blank?
 
     @candidates = Candidate.where(filters).order("#{sort_column} #{sort_direction}").page(page).per(limit)
@@ -44,7 +45,9 @@ class CandidatesController < ApplicationController
     respond_to do |format|
       format.html
       # format.json { render json: candidates_data }
-      format.json { render json: { candidates: @candidates, meta: pagination_meta(@candidates), total_records: total_records } }
+      format.json do
+        render json: { candidates: @candidates, meta: pagination_meta(@candidates), total_records: }
+      end
     end
   end
 
@@ -56,10 +59,10 @@ class CandidatesController < ApplicationController
   # GET /candidates/1
   def show
     party_id = set_candidate.party_id
-    party_name = Party.find_by(party_id: party_id)&.party || "Independent candidate"
+    party_name = Party.find_by(party_id:)&.party || 'Independent candidate'
     respond_to do |format|
       format.html
-      format.json { render json: { partyName: party_name } }
+      format.json { render json: { candidate: @candidate, partyName: party_name } }
     end
     # render json: @candidate
   end
@@ -127,5 +130,4 @@ class CandidatesController < ApplicationController
   def candidate_params
     params.require(:candidate).permit(:id, :candidate_name, :sex, :constituency_id, :party_id, :age)
   end
-
 end

@@ -1,7 +1,10 @@
+<head>
+  <title> Constituency Information </title>
+</head>
 <p style="color: green"><%= notice %></p>
 
 <div class="information">
-	<h1> Constituency Information </h1>
+	<h2> Constituency Details </h2>
 
 	<div>
 	  <strong>ID</strong>
@@ -42,7 +45,8 @@
 </div>
 
 <div>
-  <%= link_to "Back to constituency table", constituencies_path %> | 
+  <%= link_to "Back to constituency table", constituencies_path %> |
+  <%= link_to 'Return to Home Page', root_path %>
   <%= button_to "Destroy this constituency", @constituency, method: :delete, data: { "turbo-method": :delete, turbo_confirm: 'Are you sure?' }%>
 </div>
 <script>
