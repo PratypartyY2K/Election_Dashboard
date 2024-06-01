@@ -3,32 +3,6 @@ class CandidatesController < ApplicationController
 
   # GET /candidates
   def index
-    # sort_column = params[:sort] || 'candidate_name'
-    # sort_direction = params[:direction] || 'asc'
-    # page = params[:page] || 1
-    # limit = params[:limit] || 10
-    # @candidates = Candidate.order(sort_column => sort_direction)
-    #                        .page(page)
-    #                        .per(limit)
-
-    # # Fetch party names for the candidates in one query
-    # party_ids = @candidates.pluck(:party_id)
-    # parties = Party.where(party_id: { '$in': party_ids }).pluck(:party)
-
-    # # Fetch constituency names for the candidates in one query
-    # constituency_ids = @candidates.pluck(:constituency_id)
-    # constituencies = Constituency.where(constituency_id: { '$in': constituency_ids }).pluck(:constituency_name)
-
-    # # Prepare response
-    # candidates_with_associations = @candidates.map do |candidate|
-    #   {
-    #     candidate_name: candidate.candidate_name,
-    #     belongs_to_party: parties,
-    #     contested_from_constituency: constituencies
-    #   }
-    # end
-
-    # render json: { candidates: candidates_with_associations }, meta: pagination_meta(@candidates)
     sort_column = params.dig(:columns, params.dig(:order, '0', :column).to_s, :data) || 'candidate_name'
     sort_direction = params.dig(:order, '0', :dir) || 'asc'
     page = params[:start].to_i / (params[:length].to_i + 1)
@@ -41,16 +15,15 @@ class CandidatesController < ApplicationController
 
     @candidates = Candidate.where(filters).order("#{sort_column} #{sort_direction}").page(page).per(limit)
     total_records = Candidate.count
-    # total_records = Candidate.count
     respond_to do |format|
-      format.html
-      # format.json { render json: candidates_data }
+      format.html # index.html.erb
       format.json do
         render json: { candidates: @candidates, meta: pagination_meta(@candidates), total_records: }
       end
     end
   end
 
+  # send all disctinct gender in Candidate model
   def gender_options
     genders = Candidate.distinct(:sex)
     render json: genders
@@ -61,44 +34,13 @@ class CandidatesController < ApplicationController
     party_id = set_candidate.party_id
     party_name = Party.find_by(party_id:)&.party || 'Independent candidate'
     respond_to do |format|
-      format.html
+      format.html # show.html.erb
       format.json { render json: { candidate: @candidate, partyName: party_name } }
     end
-    # render json: @candidate
   end
-
-  # def new
-  #   @candidate = Candidate.new
-  # end
-
-  # POST /candidates
-  # def create
-  #   constituency_id = candidate_params[:constituency_id].to_i
-  #   party_id = candidate_params[:party_id].to_i
-  #   # puts Constituency.find_by(constituency_id: constituency_id).present? && Party.find_by(party_id: party_id.to_i).present?
-  #   if Constituency.find_by(constituency_id: constituency_id).present? && Party.find_by(party_id: party_id).present?
-  #     @candidate = Candidate.new(candidate_params)
-
-  #     if @candidate.save
-  #       flash[:notice] = 'Candidate was created successfully.'
-  #       redirect_to action: 'show', id: @candidate.id
-  #       # render json: @candidate, status: :created, location: @candidate
-  #     else
-  #       flash[:alert] = 'There was an error creating a candidate.'
-  #       render :new
-  #     end
-  #   else
-  #     flash[:alert] = 'Invalid constituency ID or party ID.'
-  #     render :new
-  #   end
-  # end
 
   # PATCH/PUT /candidates/1
   def update
-    # constituency_id = candidate_params[:constituency_id].to_i
-    # party_name = candidate_params[:party].to_i
-
-    # if Constituency.find_by(constituency_id: constituency_id).present? && Party.find_by(party_id: party_id).present?
     if @candidate.update(candidate_params)
       flash[:notice] = 'Candidate was updated successfully.'
       redirect_to @candidate
@@ -106,10 +48,6 @@ class CandidatesController < ApplicationController
       flash[:alert] = 'There was an error updating the candidate.'
       render :edit
     end
-    # else
-    #   flash[:alert] = 'Invalid constituency ID or party ID.'
-    #   render :edit
-    # end
   end
 
   # DELETE /candidates/1

@@ -3,15 +3,6 @@ class UsersController < ApplicationController
 
   # GET /users
   def index
-    # sort_column = params[:sort] || 'name'
-    # sort_direction = params[:direction] || 'asc'
-    # page = params[:page].presence&.to_i || 1
-    # puts page
-    # limit = params[:limit].presence&.to_i || 10
-    # puts limit
-    # offset = (page - 1) * limit
-    # puts offset
-    # @users = User.order(sort_column => sort_direction).page(page).skip(offset).per(limit)
     sort_column = params.dig(:columns, params.dig(:order, '0', :column).to_s, :data) || 'name'
     sort_direction = params.dig(:order, '0', :dir) || 'asc'
     page = params[:start].to_i / (params[:length].to_i + 1)
@@ -34,11 +25,8 @@ class UsersController < ApplicationController
     @users = User.where(filters).order_by(sort_column => sort_direction).page(page).per(limit)
 
     total_records = User.count
-    # total_records = User.count
     respond_to do |format|
       format.html
-      # format.json { render json: users_data }
-      # .map { |user| user.as_json.merge(link: user_path(user)) }
       format.json do
         render json: {
           users: @users,
@@ -49,6 +37,7 @@ class UsersController < ApplicationController
     end
   end
 
+  # send all distinct gender in User model
   def gender_options
     genders = User.distinct(:gender)
     render json: genders
@@ -61,9 +50,7 @@ class UsersController < ApplicationController
   # GET /users/1
   def show
     constituency_id = set_user.constituency_id
-    # Rails.logger.debug "constituency_id #{constituency_id}"
     @voters = Constituency.find_by(constituency_id:)&.voters || 0
-    # Rails.logger.debug "voter count #{@voters}"
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: { user: @user, voter_count: @voters } }
@@ -73,11 +60,9 @@ class UsersController < ApplicationController
   # POST /users
   def create
     @user = User.new(user_params)
-
     if @user.save
       flash[:notice] = 'User was created successfully.'
       redirect_to @user
-      # render json: @user, status: :created, location: @user
     else
       render 'new', status: :unprocessable_identity
     end
@@ -85,8 +70,6 @@ class UsersController < ApplicationController
 
   # PATCH/PUT /users/1
   def update
-    # puts "user_params = #{user_params}"
-    # puts @user
     constituency_id = user_params[:constituency_id]
     if Constituency.find_by(constituency_id: constituency_id.to_i).present?
       if @user.update(user_params)

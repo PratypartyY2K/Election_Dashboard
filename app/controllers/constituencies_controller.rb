@@ -3,15 +3,6 @@ class ConstituenciesController < ApplicationController
 
   # GET /constituencies
   def index
-    # sort_column = params[:sort] || 'constituency_id'
-    # sort_direction = params[:direction] || 'asc'
-    # page = params[:page] || 1
-    # limit = params[:limit] || 10
-    # @constituencies = Constituency.order(sort_column => sort_direction)
-    #                               .page(page)
-    #                               .per(limit)
-
-    # render json: @constituencies, meta: pagination_meta(@constituencies)
     sort_column = params.dig(:columns, params.dig(:order, '0', :column).to_s, :data) || 'constituency_id'
     sort_direction = params.dig(:order, '0', :dir) || 'desc'
     page = params[:start].to_i / (params[:length].to_i + 1)
@@ -27,16 +18,15 @@ class ConstituenciesController < ApplicationController
 
     @constituencies = Constituency.where(filters).order_by("#{sort_column} #{sort_direction}").page(page).per(limit)
     total_records = Constituency.count
-    # total_records = Constituency.count
     respond_to do |format|
       format.html
-      # format.json { render json: constituencies_data }
       format.json do
         render json: { constituencies: @constituencies, meta: pagination_meta(@constituencies), total_records: }
       end
     end
   end
 
+  # Collect distinct constituency_types in Constituency Model
   def type_options
     ct = Constituency.distinct(:constituency_type)
     render json: ct
@@ -49,26 +39,6 @@ class ConstituenciesController < ApplicationController
       format.json { render json: { constituency: @constituency } }
     end
   end
-
-  # POST /constituencies
-  # def create
-  #   @constituency = constituency.new(constituency_params)
-
-  #   if @constituency.save
-  #     render json: @constituency, status: :created, location: @constituency
-  #   else
-  #     render json: @constituency.errors, status: :unprocessable_entity
-  #   end
-  # end
-
-  # PATCH/PUT /constituencies/1
-  # def update
-  #   if @constituency.update(constituency_params)
-  #     render json: @constituency
-  #   else
-  #     render json: @constituency.errors, status: :unprocessable_entity
-  #   end
-  # end
 
   # DELETE /constituencies/1
   def destroy
