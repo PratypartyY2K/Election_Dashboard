@@ -103,45 +103,4 @@ class UsersController < ApplicationController
   def user_params
     params.require(:user).permit(:id, :name, :gender, :constituency_id)
   end
-
-  def users_data
-    # Validate and set the sort column and direction
-    # Rails.logger.debug "Parameters passed: #{params}"
-    # puts params.dig(:order, '0', :column).to_i
-    # sort_column = params.dig(:columns, params.dig(:order, '0', :column).to_s, :data)
-    # sort_direction = params.dig(:order, '0', :dir) || 'asc'
-
-    # Rails.logger.debug "Sort Column: #{sort_column}"
-    # Rails.logger.debug "Sort Direction: #{sort_direction}"
-
-    # Ensure the sort_column is a valid attribute
-    # valid_columns = %w[name gender constituency_id]
-    # sort_column = 'name' unless valid_columns.include?(sort_column)
-
-    # Log the parameters for debugging
-    # Rails.logger.debug "Sort Column: #{sort_column}"
-    # Rails.logger.debug "Sort Direction: #{sort_direction}"
-
-    # Pagination parameters
-    # page = params[:length].to_i.nonzero? ? params[:start].to_i / params[:length].to_i + 1 : 1
-    # limit = params[:length].to_i.positive? ? params[:length].to_i : 10
-
-    # Filter conditions
-    # filters = {}
-    # filters[:name] = /#{params.dig(:columns, '0', :search, :value)}/i unless params.dig(:columns, '0', :search, :value).blank?
-    # filters[:gender] = params.dig(:columns, '1', :search, :value) unless params.dig(:columns, '1', :search, :value).blank?
-    # filters[:constituency_id] = params.dig(:columns, '2', :search, :value).to_i unless params.dig(:columns, '2', :search, :value).blank?
-    # Rails.logger.debug "Filters: #{filters}"
-
-    # Fetch and sort users
-    # @users = User.where(filters).order("#{sort_column} #{sort_direction}").page(page).per(limit)
-
-    # Build the response
-    # {
-    #   draw: params[:draw].to_i,
-    #   recordsTotal: User.count,
-    #   recordsFiltered: @users.total_count,
-    #   data: @users.as_json(only: %i[name gender constituency_id])
-    # }
-  end
 end
