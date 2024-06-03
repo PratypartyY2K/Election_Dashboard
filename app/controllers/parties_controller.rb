@@ -1,5 +1,5 @@
 class PartiesController < ApplicationController
-  before_action :set_party
+  # before_action :set_party
 
   # GET /parties
   def index
