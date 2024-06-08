@@ -49,7 +49,8 @@ class UsersController < ApplicationController
 
   # GET /users/1
   def show
-    constituency_id = set_user.constituency_id
+    @user = set_user
+    constituency_id = @user.constituency_id
     @voters = Constituency.find_by(constituency_id:)&.voters || 0
     respond_to do |format|
       format.html # show.html.erb
@@ -64,7 +65,7 @@ class UsersController < ApplicationController
       flash[:notice] = 'User was created successfully.'
       redirect_to @user
     else
-      render 'new', status: :unprocessable_identity
+      render 'new', status: :unprocessable_entity
     end
   end
 
