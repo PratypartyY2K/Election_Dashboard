@@ -56,6 +56,8 @@ group :development, :test do
   gem 'debug', '>= 1.0.0', platforms: %i[mri windows]
   gem 'factory_bot_rails', '~> 6.4', '>= 6.4.3'
   gem 'rspec-rails'
+  gem 'faker'
+  gem 'rails-controller-testing'
 end
 
 group :test do

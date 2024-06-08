@@ -55,11 +55,7 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
-  config.include FactoryBot::Syntax::Methods
-  config.before(:suite) do
-    FactoryBot.find_definitions
-  end
-  config.include FactoryBot::Syntax::Methods
+
   # Use database_cleaner for Mongoid
   config.before(:suite) do
     DatabaseCleaner[:mongoid].strategy = :deletion
@@ -73,4 +69,11 @@ RSpec.configure do |config|
   config.after(:each) do
     DatabaseCleaner.clean
   end
+
+  # config.before(:suite) do
+  #   FactoryBot.find_definitions
+  # end
+
+  config.include FactoryBot::Syntax::Methods
+  config.include FactoryBot::Syntax::Methods
 end
