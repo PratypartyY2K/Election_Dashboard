@@ -60,9 +60,9 @@ class UsersController < ApplicationController
 
   # POST /users
   def create
-    constituency_id = user_params[:constituency_id]
+    constituency_id = user_params[:constituency_id].to_i
     @user = User.new(user_params)
-    if Constituency.find_by(constituency_id: constituency_id.to_i).present?
+    if Constituency.find_by(constituency_id:).present?
       if @user.save
         flash[:notice] = 'User was created successfully.'
         redirect_to @user
@@ -72,7 +72,7 @@ class UsersController < ApplicationController
       end
     else
       flash[:alert] = "#{constituency_id} is an invalid constituency ID. Please enter valid constituency ID"
-      render :new, satatus: :bad_request
+      render :new, status: :bad_request
     end
   end
 
