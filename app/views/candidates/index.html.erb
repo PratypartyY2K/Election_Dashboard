@@ -12,12 +12,14 @@
       <tr>
         <th>Name</th>
         <th>Gender</th>
+        <th>Consitutency ID</th>
       </tr>
       <tr class="filters">
         <th><input type="text" id="name-search" placeholder="Search Name"></th>
         <th><select id="gender-select">
           <option value="">All</option></select>
         </th>
+        <th><input type="text" id="constituency-search" placeholder="Search Consitutency ID"></th>
       </tr>
     </thead>
     <tbody>
@@ -43,6 +45,7 @@
             console.log(d);
             d.columns[0].search.value = $('#name-search').val();
             d.columns[1].search.value = $('#gender-select').val();
+            d.columns[2].search.value = $('#constituency-search').val();
           },
           dataSrc: function(json) {
             json.recordsTotal = json.total_records;
@@ -58,6 +61,7 @@
               return `<a href="/candidates/${row._id}">${data}</a>`; },
           },
           { data: 'sex' },
+          { data: 'constituency_id'}
         ],
         pageLength: 10, // default page length
         lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]], // dropdown options

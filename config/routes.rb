@@ -10,18 +10,7 @@ Rails.application.routes.draw do
   get 'constituencies/type_options', to: 'constituencies#type_options'
   # Resources routes
   resources :users
-  
   resources :candidates
-  
-  resources :constituencies do
-    resources :users
-  end
-  
-  resources :parties do
-    resources :candidates
-  end
-  
-  resources :constituencies do
-    resources :candidates
-  end
+  resources :constituencies
+  resources :parties
 end

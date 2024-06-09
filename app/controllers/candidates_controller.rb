@@ -12,6 +12,7 @@ class CandidatesController < ApplicationController
     filters[:candidate_name] = /#{params.dig(:columns, '0', :search, :value)}/i unless params.dig(:columns, '0',
                                                                                                   :search, :value).blank?
     filters[:sex] = params.dig(:columns, '1', :search, :value) unless params.dig(:columns, '1', :search, :value).blank?
+    filters[:constituency_id] = params.dig(:columns, '2', :search, :value) unless params.dig(:columns, '2', :search, :value).blank?
 
     @candidates = Candidate.where(filters).order("#{sort_column} #{sort_direction}").page(page).per(limit)
     total_records = Candidate.count
