@@ -62,11 +62,17 @@ class UsersController < ApplicationController
   def create
     constituency_id = user_params[:constituency_id]
     @user = User.new(user_params)
-    if @user.save
-      flash[:notice] = 'User was created successfully.'
-      redirect_to @user
+    if Constituency.find_by(constituency_id: constituency_id.to_i).present?
+      if @user.save
+        flash[:notice] = 'User was created successfully.'
+        redirect_to @user
+      else
+        flash[:alert] = 'There was an error creating the user.'
+        render :new, status: :unprocessable_entity
+      end
     else
-      render 'new', status: :unprocessable_identity
+      flash[:alert] = "#{constituency_id} is an invalid constituency ID. Please enter valid constituency ID"
+      render :new, satatus: :bad_request
     end
   end
 
