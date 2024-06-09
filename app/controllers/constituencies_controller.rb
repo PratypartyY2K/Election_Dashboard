@@ -40,7 +40,9 @@ class ConstituenciesController < ApplicationController
     @candidates = Candidate.find_by_party(constituency_id)
     respond_to do |format|
       format.html
-      format.json { render json: { constituency: @constituency, partyCount: @distinct_party_count, candidates: @candidates } }
+      format.json do
+        render json: { constituency: @constituency, partyCount: @distinct_party_count, candidates: @candidates }
+      end
     end
   end
 

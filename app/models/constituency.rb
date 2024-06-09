@@ -25,9 +25,9 @@ class Constituency
 
   def self.distinct_party_count(constituency_id)
     Candidate.collection.aggregate([
-      { "$match": { "constituency_id": constituency_id } },
-      { "$group": { "_id": "$party_id" } },
-      { "$count": "distinct_party_count" }
-    ]).first['distinct_party_count'] || 0
+                                     { "$match": { "constituency_id": constituency_id } },
+                                     { "$group": { "_id": '$party_id' } },
+                                     { "$count": 'distinct_party_count' }
+                                   ]).first['distinct_party_count'] || 0
   end
 end
