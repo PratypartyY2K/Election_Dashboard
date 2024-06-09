@@ -1,37 +1,40 @@
 <head>
   <title> User Information </title>
 </head>
-<p style="color: green"><%= notice %></p>
-<div class="information">
-  <h2> User Details </h2>
-  <div>
-    <strong>User ID</strong>
-    <p id="user_id"></p>
+<div class="wrapper">
+  <div class="flash_message">
+    <p style="color: green"><%= notice %></p>
   </div>
-  <div>
-    <strong>User Name</strong> 
-    <p id="user_name"></p>
-  </div>
-  <div>
-    <strong>Gender</strong>
-    <p id="user_gender"></p>
-  </div>
-  <div>
-    <strong>Constituency ID user belongs to</strong>
-    <p id="user_constituency"></p>
-  </div>
-  <div>
-    <strong>Number of voters in the Constituency</strong>
-    <p id="user_constituency_voter_count"></p>
+  <div class="information">
+    <%= link_to "Users", users_path %>
+    <div class="heading_container">
+      <div class="left">
+        <h3 id="user_name"></h3>
+      </div>
+      <div class="right">
+        <button class="filter_button" title="Edit user"><%= link_to "Edit User", edit_user_path(@user) %></button>
+        <%= button_to "Destroy this user", user_path(@user), method: :delete, class: "filter_button", form_class: "myButton" %>
+      </div>
+    </div>
+    
+    <div class="information_subdiv">
+      <strong>User ID</strong>
+      <p id="user_id" class="atrribute_value"></p>
+    </div>
+    <div class="information_subdiv">
+      <strong>Gender</strong>
+      <p id="user_gender" class="atrribute_value"></p>
+    </div>
+    <div class="information_subdiv">
+      <strong>Constituency ID user belongs to</strong>
+      <p id="user_constituency" class="atrribute_value"></p>
+    </div>
+    <div class="information_subdiv">
+      <strong>Number of voters in the Constituency</strong>
+      <p id="user_constituency_voter_count" class="atrribute_value"></p>
+    </div>
   </div>
 </div>
-<div>
-  <%= link_to "Edit this user", edit_user_path(@user) %> |
-  <%= link_to "Back to users", users_path %> |
-  <%= link_to 'Return to Home Page', root_path %>
-  <%= button_to "Destroy this user", user_path(@user), method: :delete %>
-</div>
-
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     let voterCountElement = document.getElementById('user_constituency_voter_count');
@@ -47,11 +50,11 @@
         return response.json();
       })
       .then(data => {
-        userID.textContent = data.user._id;
-        userName.textContent = data.user.name
-        userGender.textContent = data.user.gender
-        userConstituency.textContent = data.user.constituency_id;
-        voterCountElement.textContent = data.voter_count;
+        userID.textContent = data.user._id || "N/A";
+        userName.textContent = data.user.name || "N/A";
+        userGender.textContent = data.user.gender || "N/A";
+        userConstituency.textContent = data.user.constituency_id  || "N/A";
+        voterCountElement.textContent = data.voter_count  || "0";
       })
       .catch(error => {
         console.error('There was a problem with the fetch operation:', error);

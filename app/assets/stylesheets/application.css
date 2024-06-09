@@ -29,7 +29,6 @@ a {
 a:hover {
   text-decoration: none;
   color: #868585;
-  
 }
 
 a:active, a:visited {
@@ -88,18 +87,19 @@ nav a:hover {
 
 .heading_container {
   /* border: 1px solid orange; */
+  margin: 10px 0;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
-.filter_button {
+.filter_button, .filter_button a {
   padding: 0.5rem;
   background-color: orangered;
   color: white;
   font-weight: 500;
   text-transform: uppercase;
   border: none;
-  border-radius: 2px;
   cursor: pointer;
 }
 
@@ -111,9 +111,8 @@ nav a:hover {
 
 .display {
   width: 100% !important;
-  margin: 0;
+  margin: 20px 0;
 	border-collapse: collapse;
- 	margin-top: 20px;
   /* border: 2px solid black; */
 }
 
@@ -123,24 +122,47 @@ nav a:hover {
 
 .filters th input, .filters th select {
 	/* border: 1px solid red; */
-  /* padding: 4px 8px; */
-  padding: 2px;
-
+  padding: 0.2rem;
+  overflow: hidden;
+  width: 100%;
 }
 
-/* a:hover {
-	text-decoration: underline;
+.information_subdiv {
+  /* border: 1px solid black; */
+  margin: 10px 0;
 }
 
-a {
-    text-decoration: none;
-    color: blueviolet;
-} */
-
-.display input, .display select {
-	width: 100%;
+.myButton {
+  display: inline;
 }
 
-.information p {
-	color: purple;
+.atrribute_value {
+  border: 2px solid black;
+  border-radius: 5px;
+  padding: 2px 4px;
+  background-color: whitesmoke;
+  border-radius: 2px;
+  /* display: block; */
+  width: 250px;
+  height: 20px;
+}
+
+.list_information {
+  list-style-type: none;
+  padding: 0;
+  border: 2px solid black;
+  width: max-content;
+}
+
+.list_information li {
+  padding: 2px 4px;
+  border-bottom: 2px solid black;
+}
+
+.list_information li:last-child {
+  border-bottom: none;
+}
+
+.form_submit_button {
+  margin: 10px 0;
 }

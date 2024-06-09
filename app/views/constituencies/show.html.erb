@@ -1,63 +1,65 @@
 <head>
   <title> Constituency Information </title>
 </head>
-<p style="color: green"><%= notice %></p>
+<div class="wrapper">
+  <div class="flash_message">
+    <p style="color: green"><%= notice %></p>
+  </div>
+  <div class="information">
+    <%= link_to "Constituencies", constituencies_path %>
+    <div class="heading_container">
+      <div class="left">
+        <h3 id="constituency_name"></h3>
+      </div>
+      <div class="right">
+        <%= button_to "Destroy this Constituency", constituency_path(@constituency), method: :delete, class: "filter_button", form_class: "myButton" %>
+      </div>
+    </div>
 
-<div class="information">
-	<h2> Constituency Details </h2>
-
-	<div>
-	  <strong>ID</strong>
-	  <p id="constituency_id"></p>
-	</div>
-	<div>
-	  <strong>Name</strong>
-	  <p id="constituency_name"></p>
-	</div>
-	<div>
-	  <strong>Type</strong>
-	  <p id="constituency_type"></p>
-	</div>
-	<div>
-	  <strong>District Name</strong>
-	  <p id="constituency_district"></p>
-	</div>
-	<div>
-	  <strong>Voter count</strong>
-	  <p id="constituency_voters"></p>
-	</div>
-	<div>
-	  <strong>Actual votes obtained</strong>
-	  <p id="constituency_actual_voters"></p>
-	</div>
-	<div>
-	  <strong>Sub Region</strong>
-	  <p id="constituency_sub_region"></p>
-	</div>
-	<div>
-	  <strong>Candidate Count</strong>
-	  <p id="constituency_cc"></p>
-	</div>
-	<div>
-	  <strong>Turnout Percentage</strong>
-	  <p id="constituency_tp"></p>
-	</div>
-	<div>
-	  <strong>Party count in Constituency</strong>
-	  <p id="constituency_party_count"></p>
-	</div>
-	<div>
-	  <strong>Candidate List</strong>
-	  <ul id="constituency_candidacy_list" class="list_information">
-	  </ul>
-	</div>
+    <div class="information_subdiv">
+      <strong>ID</strong>
+      <p id="constituency_id" class="atrribute_value"></p>
+    </div>
+    <div class="information_subdiv">
+      <strong>Type</strong>
+      <p id="constituency_type" class="atrribute_value"></p>
+    </div>
+    <div class="information_subdiv">
+      <strong>District Name</strong>
+      <p id="constituency_district" class="atrribute_value"></p>
+    </div>
+    <div class="information_subdiv">
+      <strong>Voter count</strong>
+      <p id="constituency_voters" class="atrribute_value"></p>
+    </div>
+    <div class="information_subdiv">
+      <strong>Actual votes obtained</strong>
+      <p id="constituency_actual_voters" class="atrribute_value"></p>
+    </div>
+    <div class="information_subdiv">
+      <strong>Sub Region</strong>
+      <p id="constituency_sub_region" class="atrribute_value"></p>
+    </div>
+    <div class="information_subdiv">
+      <strong>Candidate Count</strong>
+      <p id="constituency_cc" class="atrribute_value"></p>
+    </div>
+    <div class="information_subdiv">
+      <strong>Turnout Percentage</strong>
+      <p id="constituency_tp" class="atrribute_value"></p>
+    </div>
+    <div class="information_subdiv">
+      <strong>Party count in Constituency</strong>
+      <p id="constituency_party_count" class="atrribute_value"></p>
+    </div>
+    <div class="information_subdiv">
+      <strong>Candidate List</strong>
+      <ul id="constituency_candidacy_list" class="list_information">
+      </ul>
+    </div>
+  </div>
 </div>
 
-<div>
-  <%= link_to "Back to constituency table", constituencies_path %> |
-  <%= link_to 'Return to Home Page', root_path %>
-  <%= button_to "Destroy this constituency", @constituency, method: :delete, data: { "turbo-method": :delete, turbo_confirm: 'Are you sure?' }%>
-</div>
 <script>
 	document.addEventListener('DOMContentLoaded', function() {
 	    let constituencyID = document.getElementById('constituency_id');
@@ -80,21 +82,21 @@
 	      })
 	      .then(data => {
 	      	console.log(data);
-          constituencyID.textContent = data.constituency.constituency_id
-          constituencyName.textContent = data.constituency.constituency_name
-          constituencyType.textContent = data.constituency.constituency_type
-          constituencyDistrict.textContent = data.constituency.district_name
-          constituencyVC.textContent = data.constituency.voters
-          constituencyACO.textContent = data.constituency.valid_votes
-          constituencySubRegion.textContent = data.constituency.sub_region
-          constituencyCanCount.textContent = data.constituency.candidate_count
-          constituencyTurnoutPer.textContent = data.constituency.turnout_percentage + " %"
+          constituencyID.textContent = data.constituency.constituency_id || "N/A";
+          constituencyName.textContent = data.constituency.constituency_name || "N/A";
+          constituencyType.textContent = data.constituency.constituency_type || "N/A";
+          constituencyDistrict.textContent = data.constituency.district_name || "N/A";
+          constituencyVC.textContent = data.constituency.voters || "N/A";
+          constituencyACO.textContent = data.constituency.valid_votes || "N/A";
+          constituencySubRegion.textContent = data.constituency.sub_region || "N/A";
+          constituencyCanCount.textContent = data.constituency.candidate_count || "N/A";
+          constituencyTurnoutPer.textContent = data.constituency.turnout_percentage + " %"  || "N/A";
           constituencyPartyCount.textContent = data.partyCount;
           data.candidates.forEach((candidate) => {
-	          	let li = document.createElement('li');
-	          	li.innerText = candidate.candidate_name;
-	          	constituencyCandidacyList.appendChild(li);
-	          });
+            let li = document.createElement('li');
+            li.innerText = candidate.candidate_name;
+            constituencyCandidacyList.appendChild(li);
+	        });
 	      })
 	      .catch(error => {
 	        console.error('There was a problem with the fetch operation:', error);

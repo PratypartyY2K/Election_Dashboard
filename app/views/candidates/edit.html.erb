@@ -1,13 +1,18 @@
 <head>
   <title> Edit Candidate </title>
 </head>
-<h1>Editing candidate</h1>
-<p style="color: red"><%= alert %></p>
+<div class="wrapper">
+<%= link_to "Candidates", candidates_path %>
+<div class="heading_container">
+  <div class="left">
+    <h1>Edit Candidate</h1>
+  </div>
+  <div class="right">
+    <button class="filter_button" title="Navigate to candidate"><%= link_to "Show this candidate", @candidate %></button>
+  </div>
+</div>
+<div class="flash_message">
+  <p style="color: red"><%= alert %></p>
+</div>
 <%= render "form", candidate: @candidate %>
 
-<br>
-
-<div>
-  <%= link_to "Show this candidate", @candidate %> |
-  <%= link_to "Back to candidates", candidates_path %>
-</div>

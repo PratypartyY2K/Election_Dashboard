@@ -6,8 +6,11 @@
     <p style="color: green"><%= notice %></p>
   </div>
   <div class="heading_container">
-    <h2> Users </h2>
-    <button id="search-button" title="Apply filters" class="filter_button"> Search </button>
+    <div class="left"><h2> Users </h2></div>
+    <div class="right">
+      <button class="filter_button" title="New user"><%= link_to "Create new user", new_user_path %></button>
+      <button id="search-button" title="Apply filters" class="filter_button"> Search </button>
+    </div>
   </div>
   <table id="users-table" class="display">
     <thead>

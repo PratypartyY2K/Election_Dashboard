@@ -1,58 +1,59 @@
 <head>
   <title> Candidate Information </title>
 </head>
-<p style="color: green"><%= notice %></p>
+<div class="wrapper">
+  <div class="flash_message">
+    <p style="color: green"><%= notice %></p>
+  </div>
+  <div class="information">
+    <%= link_to "Candidates", candidates_path %>
+    <div class="heading_container">
+      <div class="left">
+        <h3 id="candidate_name"></h3>
+      </div>
+      <div class="right">
+        <button class="filter_button" title="Edit candidate"><%= link_to "Edit Candidate", edit_candidate_path(@candidate) %></button>
+        <%= button_to "Destroy Candidate", candidate_path(@candidate), method: :delete, class: "filter_button", form_class: "myButton" %>
+      </div>
+    </div>
 
-<div class="information">
-	<h2> Candidate Details </h2>
-
-	<div>
-	  <strong>ID</strong>
-	  <p id="candidate_id"></p>
-	</div>
-	<div>
-	  <strong>Name</strong>
-	  <p id="candidate_name"></p>
-	</div>
-	<div>
-	  <strong>Type</strong>
-	  <p id="candidate_type"></p>
-	</div>
-	<div>
-	  <strong>Gender</strong>
-	  <p id="candidate_gender"></p>
-	</div>
-	<div>
-	  <strong>Age</strong>
-	  <p id="candidate_age"></p>
-	</div>
-	<div>
-	  <strong>Constituency ID</strong>
-	  <p id="candidate_constituency_id"></p>
-	</div>
-	<div>
-	  <strong>Party Name</strong>
-	  <p id="candidate_party_name"></p>
-	</div>
-	<div>
-	  <strong>Position in Constituency</strong>
-	  <p id="candidate_position"></p>
-	</div>
-	<div>
-	  <strong>Votes obtained</strong>
-	  <p id="candidate_votes_obtained"></p>
-	</div>
-	<div>
-	  <strong>Vote Share Percentage</strong>
-	  <p id="candidate_vote_share_percentage"></p>
-	</div>
-</div>
-
-<div>
-  <%= link_to "Edit this candidate", edit_candidate_path(@candidate) %> |
-  <%= link_to "Back to candidates", candidates_path %> |
-  <%= link_to 'Return to Home Page', root_path %>
-  <%= button_to "Destroy this candidate", @candidate, method: :delete, data: { "turbo-method": :delete, turbo_confirm: 'Are you sure?' }%>
+    <div class="information_subdiv">
+      <strong>ID</strong>
+      <p id="candidate_id" class="atrribute_value"></p>
+    </div>
+    <div class="information_subdiv">
+      <strong>Type</strong>
+      <p id="candidate_type" class="atrribute_value"></p>
+    </div>
+    <div class="information_subdiv">
+      <strong>Gender</strong>
+      <p id="candidate_gender" class="atrribute_value"></p>
+    </div>
+    <div class="information_subdiv">
+      <strong>Age</strong>
+      <p id="candidate_age" class="atrribute_value"></p>
+    </div>
+    <div class="information_subdiv">
+      <strong>Constituency ID</strong>
+      <p id="candidate_constituency_id" class="atrribute_value"></p>
+    </div>
+    <div class="information_subdiv">
+      <strong>Party Name</strong>
+      <p id="candidate_party_name" class="atrribute_value"></p>
+    </div>
+    <div class="information_subdiv">
+      <strong>Position in Constituency</strong>
+      <p id="candidate_position" class="atrribute_value"></p>
+    </div>
+    <div class="information_subdiv">
+      <strong>Votes obtained</strong>
+      <p id="candidate_votes_obtained" class="atrribute_value"></p>
+    </div>
+    <div class="information_subdiv">
+      <strong>Vote Share Percentage</strong>
+      <p id="candidate_vote_share_percentage" class="atrribute_value"></p>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -75,15 +76,15 @@
 	        return response.json();
 	      })
 	      .then(data => {
-          candidateID.textContent = data.candidate._id;
-          candidateName.textContent = data.candidate.candidate_name;
-          candidateType.textContent = data.candidate.candidate_type;
-          candidateGender.textContent = data.candidate.sex;
-          candidateAge.textContent = data.candidate.age;
-          candidateConstituencyID.textContent = data.candidate.constituency_id;
-          candidatePosition.textContent = data.candidate.position;
-          candidateVotesObtained.textContent = data.candidate.votes_obtained;
-          candidateVoteSharePercentage.textContent = data.candidate.vote_share_percentage + ' %';
+          candidateID.textContent = data.candidate._id || "N/A";
+          candidateName.textContent = data.candidate.candidate_name || "N/A";
+          candidateType.textContent = data.candidate.candidate_type || "N/A";
+          candidateGender.textContent = data.candidate.sex || "N/A";
+          candidateAge.textContent = data.candidate.age || "N/A";
+          candidateConstituencyID.textContent = data.candidate.constituency_id || "N/A";
+          candidatePosition.textContent = data.candidate.position || "N/A";
+          candidateVotesObtained.textContent = data.candidate.votes_obtained || "N/A";
+          candidateVoteSharePercentage.textContent = data.candidate.vote_share_percentage + ' %' || "N/A";
 	        candidatePartyName.textContent = data.partyName;
 	      })
 	      .catch(error => {

@@ -1,13 +1,18 @@
 <head>
   <title> Edit User </title>
 </head>
-<h1>Editing user</h1>
-<p style="color: red"><%= alert %></p>
+<div class="wrapper">
+<%= link_to "Users", users_path %>
+<div class="heading_container">
+  <div class="left">
+    <h1>Edit User</h1>
+  </div>
+  <div class="right">
+    <button class="filter_button" title="Navigate to user"><%= link_to "Show this user", @user %></button>
+  </div>
+</div>
+<div class="flash_message">
+  <p style="color: red"><%= alert %></p>
+</div>
 <%= render "form", user: @user %>
 
-<br>
-
-<div>
-  <%= link_to "Show this user", @user %> |
-  <%= link_to "Back to users", users_path %>
-</div>
