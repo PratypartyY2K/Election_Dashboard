@@ -42,6 +42,15 @@
 	  <strong>Turnout Percentage</strong>
 	  <p id="constituency_tp"></p>
 	</div>
+	<div>
+	  <strong>Party count in Constituency</strong>
+	  <p id="constituency_party_count"></p>
+	</div>
+	<div>
+	  <strong>Candidate List</strong>
+	  <ul id="constituency_candidacy_list" class="list_information">
+	  </ul>
+	</div>
 </div>
 
 <div>
@@ -60,6 +69,8 @@
       let constituencySubRegion = document.getElementById('constituency_sub_region');
       let constituencyCanCount = document.getElementById('constituency_cc');
       let constituencyTurnoutPer = document.getElementById('constituency_tp');
+      let constituencyPartyCount = document.getElementById('constituency_party_count');
+      let constituencyCandidacyList = document.getElementById('constituency_candidacy_list');
 	    fetch('/constituencies/<%= @constituency.id %>.json')
 	      .then(response => {
 	        if (!response.ok) {
@@ -68,6 +79,7 @@
 	        return response.json();
 	      })
 	      .then(data => {
+	      	console.log(data);
           constituencyID.textContent = data.constituency.constituency_id
           constituencyName.textContent = data.constituency.constituency_name
           constituencyType.textContent = data.constituency.constituency_type
@@ -77,6 +89,12 @@
           constituencySubRegion.textContent = data.constituency.sub_region
           constituencyCanCount.textContent = data.constituency.candidate_count
           constituencyTurnoutPer.textContent = data.constituency.turnout_percentage + " %"
+          constituencyPartyCount.textContent = data.partyCount;
+          data.candidates.forEach((candidate) => {
+	          	let li = document.createElement('li');
+	          	li.innerText = candidate.candidate_name;
+	          	constituencyCandidacyList.appendChild(li);
+	          });
 	      })
 	      .catch(error => {
 	        console.error('There was a problem with the fetch operation:', error);

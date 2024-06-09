@@ -1,5 +1,5 @@
 class PartiesController < ApplicationController
-  # before_action :set_party
+  before_action :set_party, only: [:show]
 
   # GET /parties
   def index
@@ -19,6 +19,17 @@ class PartiesController < ApplicationController
     respond_to do |format|
       format.html
       format.json { render json: { parties: @parties, meta: pagination_meta(@parties), total_records: } }
+    end
+  end
+
+# GET /parties/1
+  def show
+    @party = set_party
+    @candidates = Candidate.find_by_party(@party.party_id)
+
+    respond_to do |format|
+      format.html # show.html.erb
+      format.json { render json: { party: @party, candidates: @candidates } }
     end
   end
 
