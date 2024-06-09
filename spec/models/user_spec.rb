@@ -31,5 +31,5 @@ RSpec.describe User, type: :model do
       expect(assoc).to be_present
       expect(assoc.relation).to eq Mongoid::Association::Referenced::HasOne::Proxy
     end
-  end  
+  end
 end

@@ -26,11 +26,11 @@ class Candidate
 
   # candidates having party_id
   def self.find_by_party(party_id)
-    where(party_id: party_id)
+    where(party_id:)
   end
 
-  #candidates having constituency_id
-  def self.find_by_party(constituency_id)
-    where(constituency_id: constituency_id)
+  # candidates having constituency_id
+  def self.find_by_constituency(constituency_id)
+    where(constituency_id:)
   end
 end

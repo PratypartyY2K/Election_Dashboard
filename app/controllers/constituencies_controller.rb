@@ -37,7 +37,7 @@ class ConstituenciesController < ApplicationController
     @constituency = set_constituency
     constituency_id = @constituency.constituency_id.to_i
     @distinct_party_count = Constituency.distinct_party_count(constituency_id)
-    @candidates = Candidate.find_by_party(constituency_id)
+    @candidates = Candidate.find_by_constituency(constituency_id)
     respond_to do |format|
       format.html
       format.json do

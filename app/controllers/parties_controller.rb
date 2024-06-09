@@ -22,11 +22,10 @@ class PartiesController < ApplicationController
     end
   end
 
-# GET /parties/1
+  # GET /parties/1
   def show
     @party = set_party
     @candidates = Candidate.find_by_party(@party.party_id)
-
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: { party: @party, candidates: @candidates } }
