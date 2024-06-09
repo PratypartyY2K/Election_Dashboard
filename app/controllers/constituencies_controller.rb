@@ -34,9 +34,13 @@ class ConstituenciesController < ApplicationController
 
   # GET /constituencies/1
   def show
+    @constituency = set_constituency
+    constituency_id = @constituency.constituency_id.to_i
+    @distinct_party_count = Constituency.distinct_party_count(constituency_id)
+    @candidates = Candidate.find_by_party(constituency_id)
     respond_to do |format|
       format.html
-      format.json { render json: { constituency: @constituency } }
+      format.json { render json: { constituency: @constituency, partyCount: @distinct_party_count, candidates: @candidates } }
     end
   end
 

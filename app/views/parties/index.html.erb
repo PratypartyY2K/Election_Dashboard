@@ -53,7 +53,9 @@
         },
         columns: [
           { data: 'party_id' },
-          { data: 'party' },
+          { data: 'party', render: function(data, type, row) { // Hyperlink to /parties/:id
+            return `<a href="/parties/${row._id}">${data}</a>`;
+          } },
         ],
         pageLength: 10, // default page length
         lengthMenu: [[5, 10, 15], [5, 10, 15]], // dropdown options
