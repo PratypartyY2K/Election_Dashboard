@@ -1,16 +1,18 @@
 <head>
   <title>Candidates</title>
 </head>
-<body>
-  <p> <%= link_to 'Return to Home Page', root_path %> </p>
-  <p style="color: green"><%= notice %></p>
-  <h1> Candidates Table </h1>
-  <h2> Press the <button id="search-button">Search</button> button to see results after entering filters </h2>
-
-  <table id="candidates-table" class="display" style="width:100%">
+<div class="wrapper">
+  <div class="flash_message">
+    <p style="color: green"><%= notice %></p>
+  </div>
+  <div class="heading_container">
+    <h2> Candidates </h2>
+    <button id="search-button" title="Apply filters" class="filter_button">Search</button>
+  </div>
+  <table id="candidates-table" class="display">
     <thead>
       <tr>
-        <th>Name</th>
+        <th>Candidate Name</th>
         <th>Gender</th>
         <th>Consitutency ID</th>
       </tr>
@@ -26,15 +28,16 @@
       <!-- Data will be inserted here dynamically -->
     </tbody>
   </table>
-  
+</div>
   <script>
     $(document).ready(function() {
       console.log("First call");
       $(":text").val('');
       const table = $('#candidates-table').DataTable({
+        stateSave: true,
         orderCellsTop: true,
         pagingType: 'full_numbers',
-        searchable: false,
+        searchable: true,
         deferRender: true,
         processing: true,
         serverSide: true,
@@ -65,6 +68,13 @@
         ],
         pageLength: 10, // default page length
         lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]], // dropdown options
+        layout:{
+          top2Start: 'pageLength',
+          topStart: 'info',
+          topEnd: 'paging',
+          bottomStart: 'pageLength',
+          bottomEnd: 'paging',
+        },
         initComplete: function () {
           // Fetch and populate gender options
           $.ajax({
@@ -100,5 +110,4 @@
       $('#candidates-table_filter').hide();
     });
   </script>
-</body>
-</html>
+

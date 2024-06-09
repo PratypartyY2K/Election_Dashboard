@@ -1,12 +1,14 @@
 <head>
   <title> Parties </title>
 </head>
-<body>
-  <p> <%= link_to 'Return to Home Page', root_path %> </p>
-  <h1> Party Table </h1>
-  <h3> Press the <button id="search-button">Search</button> button to see results after entering filters </h3>
+<div class="wrapper">
+  
+   <div class="heading_container">
+    <h2> Parties </h2>
+    <button id="search-button" title="Apply filters" class="filter_button"> Search </button>
+  </div>
 
-  <table id="parties-table" class="display" style="width:100%">
+  <table id="parties-table" class="display">
     <thead>
       <tr>
         <th>Party ID</th>
@@ -21,15 +23,23 @@
       <!-- Data will be inserted here dynamically -->
     </tbody>
   </table>
-  
+</div>
   <script>
     $(document).ready(function() {
       console.log("First call");
       $( ":text" ).val('');
       const table = $('#parties-table').DataTable({
+        layout:{
+          top2Start: 'pageLength',
+          topStart: 'info',
+          topEnd: 'paging',
+          bottomStart: 'pageLength',
+          bottomEnd: 'paging',
+        },
+        stateSave: true,
         orderCellsTop: true,
         pagingType: 'full_numbers',
-        searchable: false,
+        searchable: true,
         deferRender: true,
         processing: true,
         serverSide: true,
@@ -78,4 +88,3 @@
       $('#parties-table_filter').hide();
     });
   </script>
-</body>
