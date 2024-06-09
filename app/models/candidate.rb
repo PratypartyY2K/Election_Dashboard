@@ -19,4 +19,18 @@ class Candidate
   # Associations
   has_one :constituency, class_name: 'Constituency', foreign_key: :constituency_id
   has_one :party, class_name: 'Party', foreign_key: :party_id
+
+  # Indexes
+  index({ constituency_id: 1 })
+  index({ party_id: 1 })
+
+  # candidates having party_id
+  def self.find_by_party(party_id)
+    where(party_id: party_id)
+  end
+
+  #candidates having constituency_id
+  def self.find_by_party(constituency_id)
+    where(constituency_id: constituency_id)
+  end
 end

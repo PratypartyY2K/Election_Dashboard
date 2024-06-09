@@ -1,0 +1,54 @@
+<head>
+  <title> Party Information </title>
+</head>
+<p style="color: green"><%= notice %></p>
+
+<div class="information">
+	<h2> Party Details </h2>
+
+	<div>
+	  <strong>Party ID</strong>
+	  <p id="party_id"></p>
+	</div>
+	<div>
+	  <strong>Party Name</strong>
+	  <p id="party_name"></p>
+	</div>
+	<div>
+	  <strong>Candidate List</strong>
+	  <ul id="party_candidacy_list" class="list_information">
+	  </ul>
+	</div>
+</div>
+
+<div>
+  <%= link_to "Back to party table", parties_path %> |
+  <%= link_to 'Return to Home Page', root_path %>
+</div>
+<script>
+	document.addEventListener('DOMContentLoaded', function() {
+	    let partyID = document.getElementById('party_id');
+      let partyName = document.getElementById('party_name');
+      let partyCandidacyList = document.getElementById('party_candidacy_list');
+	    fetch('/parties/<%= @party.id %>.json')
+	      .then(response => {
+	        if (!response.ok) {
+	          throw new Error('Network response was not ok');
+	        }
+	        return response.json();
+	      })
+	      .then(data => {
+	          console.log(data);
+	          partyID.textContent = data.party.party_id || "N/A"
+	          partyName.textContent = data.party.party || "N/A"
+	          data.candidates.forEach((candidate) => {
+	          	let li = document.createElement('li');
+	          	li.innerText = candidate.candidate_name;
+	          	partyCandidacyList.appendChild(li);
+	          });
+	      })
+	      .catch(error => {
+	        console.error('There was a problem with the fetch operation:', error);
+	      });
+  	});
+</script>
