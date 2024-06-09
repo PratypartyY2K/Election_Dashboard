@@ -1,12 +1,16 @@
 <head>
   <title> Create User </title>
 </head>
-<h1>New user</h1>
-<p style="color: red"><%= alert %></p>
+<div class="wrapper">
+  <%= link_to "Users", users_path %>
+  <div class="heading_container">
+    <div class="left">
+      <h1>New user</h1>  
+    </div>
+  </div>
+
+  <div class="flash_message">
+  <p style="color: red"><%= alert %></p>
+  </div>
 <%= render "form", user: @user %>
-
-<br>
-
-<div>
-  <%= link_to "Back to users", users_path %>
 </div>
