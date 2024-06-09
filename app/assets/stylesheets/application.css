@@ -14,6 +14,9 @@
  *= require_self
  */
 
+html {
+  font-family: Roboto;
+}
 .display table {
 	width: 100%;
 	border-collapse: collapse;
@@ -43,6 +46,10 @@ a {
 }
 
 .information p {
-	/* display: inline-block; */
 	color: purple;
+}
+
+.list_information {
+  list-style-type: none;
+  padding: 0;
 }
