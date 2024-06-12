@@ -11,8 +11,11 @@ class ConstituenciesController < ApplicationController
     filters = {}
     filters[:constituency_id] = params.dig(:columns, '0', :search, :value) unless params.dig(:columns, '0', :search,
                                                                                              :value).blank?
-    filters[:constituency_name] = params.dig(:columns, '1', :search, :value) unless params.dig(:columns, '1', :search,
-                                                                                               :value).blank?
+    unless params.dig(:columns, '1', :search,
+                      :value).blank?
+      filters[:constituency_name] =
+        /#{params.dig(:columns, '1', :search, :value)}/i
+    end
     filters[:constituency_type] = params.dig(:columns, '2', :search, :value) unless params.dig(:columns, '2', :search,
                                                                                                :value).blank?
 

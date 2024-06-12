@@ -12,9 +12,10 @@
   <table id="candidates-table" class="display">
     <thead>
       <tr>
-        <th>Candidate Name</th>
-        <th>Gender</th>
-        <th>Consitutency ID</th>
+        <th> Candidate Name </th>
+        <th> Gender </th>
+        <th> Consitutency ID </th>
+        <th> Votes Obtained </th>
       </tr>
       <tr class="filters">
         <th><input type="text" id="name-search" placeholder="Search Name"></th>
@@ -22,15 +23,22 @@
           <option value="">All</option></select>
         </th>
         <th><input type="text" id="constituency-search" placeholder="Search Consitutency ID"></th>
+        <th><input type="text" name="votes_obtained" id="votes_obtained" placeholder="Votes Obtained"></th>
       </tr>
     </thead>
     <tbody>
       <!-- Data will be inserted here dynamically -->
     </tbody>
   </table>
+  <div class="statistics">
+    <p id="total_votes_in_draw"></p>
+    <p id="average_voters_in_draw"></p>
+  </div>
 </div>
   <script>
+    let totalVotesInOneDraw = document.getElementById('total_votes_in_draw');
     $(document).ready(function() {
+      let totalVotesInADraw = 0;
       console.log("First call");
       $(":text").val('');
       const table = $('#candidates-table').DataTable({
@@ -46,9 +54,11 @@
           url: '/candidates.json',
           data: function(d) {
             console.log(d);
+            totalVotesInADraw = 0;
             d.columns[0].search.value = $('#name-search').val();
             d.columns[1].search.value = $('#gender-select').val();
             d.columns[2].search.value = $('#constituency-search').val();
+            d.columns[3].search.value = $('#votes_obtained').val();
           },
           dataSrc: function(json) {
             json.recordsTotal = json.total_records;
@@ -64,7 +74,11 @@
               return `<a href="/candidates/${row._id}">${data}</a>`; },
           },
           { data: 'sex' },
-          { data: 'constituency_id'}
+          { data: 'constituency_id'},
+          { data: 'votes_obtained', render: function(data, type, row) {
+            totalVotesInADraw += data;
+            return `${data}`;
+          }},
         ],
         pageLength: 10, // default page length
         lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]], // dropdown options
@@ -77,6 +91,7 @@
         },
         initComplete: function () {
           // Fetch and populate gender options
+          console.log("initComplete call");
           $.ajax({
             url: '/candidates/gender_options',
             method: 'GET',
@@ -91,7 +106,15 @@
             }
           });
         },
+        drawCallback: function () {
+          console.log("drawCallback call");
+          let rowCount = table.rows().count();
+          let avgVotesInADraw = totalVotesInADraw/rowCount;
+          totalVotesInOneDraw.textContent = `Total votes in the Votes Obtained column = ${totalVotesInADraw}`;
+          average_voters_in_draw.textContent = `Average votes = ${avgVotesInADraw}`;
+        },
       });
+
       // Handle user pressed enter to filter data
       $('input[type=text]').keydown(function(e) {
         if (e.key === "Enter") {

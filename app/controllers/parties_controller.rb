@@ -11,8 +11,8 @@ class PartiesController < ApplicationController
     filters = {}
     filters[:party_id] = params.dig(:columns, '0', :search, :value) unless params.dig(:columns, '0', :search,
                                                                                       :value).blank?
-    filters[:party] = params.dig(:columns, '1', :search, :value) unless params.dig(:columns, '1', :search,
-                                                                                   :value).blank?
+    filters[:party] = /#{params.dig(:columns, '1', :search, :value)}/i unless params.dig(:columns, '1', :search,
+                                                                                         :value).blank?
 
     @parties = Party.where(filters).order_by("#{sort_column} #{sort_direction}").page(page).per(limit)
     total_records = Party.count
