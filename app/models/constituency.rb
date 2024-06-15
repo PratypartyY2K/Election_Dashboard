@@ -30,4 +30,8 @@ class Constituency
                                      { "$count": 'distinct_party_count' }
                                    ]).first['distinct_party_count'] || 0
   end
+
+  def self.constituency_name_by_constituency_id(constituency_id)
+    find_by(constituency_id:)
+  end
 end

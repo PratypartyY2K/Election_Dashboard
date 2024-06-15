@@ -15,15 +15,13 @@
         <th> Candidate Name </th>
         <th> Gender </th>
         <th> Consitutency ID </th>
-        <th> Votes Obtained </th>
       </tr>
       <tr class="filters">
-        <th><input type="text" id="name-search" placeholder="Search Name"></th>
-        <th><select id="gender-select">
+        <th><input type="text" id="name_search" placeholder="Search Candidate Name"></th>
+        <th><select id="gender_select">
           <option value="">All</option></select>
         </th>
-        <th><input type="text" id="constituency-search" placeholder="Search Consitutency ID"></th>
-        <th><input type="text" name="votes_obtained" id="votes_obtained" placeholder="Votes Obtained"></th>
+        <th><input type="text" id="constituency_search" placeholder="Search Consitutency ID"></th>
       </tr>
     </thead>
     <tbody>
@@ -31,21 +29,22 @@
     </tbody>
   </table>
   <div class="statistics">
-    <p id="total_votes_in_draw"></p>
-    <p id="average_voters_in_draw"></p>
+    <p id="total_votes_in_table"></p>
+    <p id="average_voters_in_table"></p>
   </div>
 </div>
   <script>
-    let totalVotesInOneDraw = document.getElementById('total_votes_in_draw');
+    let votesObtained = document.getElementById('total_votes_in_table');
+    let averageVotesObtained = document.getElementById('average_voters_in_table');
     $(document).ready(function() {
-      let totalVotesInADraw = 0;
+      // let totalVotesInADraw = 0;
       console.log("First call");
       $(":text").val('');
       const table = $('#candidates-table').DataTable({
         stateSave: true,
         orderCellsTop: true,
         pagingType: 'full_numbers',
-        searchable: true,
+        searchable: false,
         deferRender: true,
         processing: true,
         serverSide: true,
@@ -53,16 +52,17 @@
         ajax: {
           url: '/candidates.json',
           data: function(d) {
-            console.log(d);
-            totalVotesInADraw = 0;
-            d.columns[0].search.value = $('#name-search').val();
-            d.columns[1].search.value = $('#gender-select').val();
-            d.columns[2].search.value = $('#constituency-search').val();
-            d.columns[3].search.value = $('#votes_obtained').val();
+            // console.log(d);
+            d.columns[0].search.value = $('#name_search').val();
+            d.columns[1].search.value = $('#gender_select').val();
+            d.columns[2].search.value = $('#constituency_search').val();
           },
           dataSrc: function(json) {
+            console.log(json);
             json.recordsTotal = json.total_records;
             json.recordsFiltered = json.meta.total_count;
+            votesObtained.textContent = `Sum of votes obtained by filtered candidates = ${json.total_votes}`;
+            averageVotesObtained.textContent = `Average of votes obtained = ${json.total_votes/json.recordsFiltered}`;
             return json.candidates;
           },
           error: function(xhr, status, errr) {
@@ -75,10 +75,6 @@
           },
           { data: 'sex' },
           { data: 'constituency_id'},
-          { data: 'votes_obtained', render: function(data, type, row) {
-            totalVotesInADraw += data;
-            return `${data}`;
-          }},
         ],
         pageLength: 10, // default page length
         lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]], // dropdown options
@@ -96,7 +92,7 @@
             url: '/candidates/gender_options',
             method: 'GET',
             success: function(data) {
-              const genderSelect = $('#gender-select');
+              const genderSelect = $('#gender_select');
               data.forEach(gender => {
                 genderSelect.append(`<option value="${gender}">${gender}</option>`);
               });
@@ -105,13 +101,6 @@
               alert(status);
             }
           });
-        },
-        drawCallback: function () {
-          console.log("drawCallback call");
-          let rowCount = table.rows().count();
-          let avgVotesInADraw = totalVotesInADraw/rowCount;
-          totalVotesInOneDraw.textContent = `Total votes in the Votes Obtained column = ${totalVotesInADraw}`;
-          average_voters_in_draw.textContent = `Average votes = ${avgVotesInADraw}`;
         },
       });
 
@@ -122,7 +111,7 @@
         }
       });
       // Apply filter after user changes gender dropdown
-      $('#gender-select').change(function() {
+      $('#gender_select').change(function() {
         table.ajax.reload();
       })
       // Handle search button click

@@ -22,13 +22,14 @@ html, * {
 
 a {
   text-decoration: none;
-  color: #000;
+  color: green;
   font-weight: 700;
 }
 
 a:hover {
   text-decoration: none;
-  color: #868585;
+  color: red;
+  transition: 250ms;
 }
 
 a:active, a:visited {

@@ -33,4 +33,18 @@ class Candidate
   def self.find_by_constituency(constituency_id)
     where(constituency_id:)
   end
+
+  # find sum of all votes obtained by all the candidates combined
+  def self.total_votes_obtained(filters = {})
+    pipeline = [
+      { '$match' => filters },
+      { '$group' => {
+        _id: nil,
+        totalVotes: { "$sum": '$votes_obtained' }
+      } }
+    ]
+
+    result = collection.aggregate(pipeline).first
+    result ? result['totalVotes'] : 0
+  end
 end

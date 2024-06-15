@@ -4,7 +4,7 @@ module PaginationMeta
   included do
     def pagination_meta(collection)
       {
-        total_count: collection.total_count
+        total_count: collection.count
       }
     end
   end

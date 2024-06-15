@@ -5,21 +5,32 @@ class CandidatesController < ApplicationController
   def index
     sort_column = params.dig(:columns, params.dig(:order, '0', :column).to_s, :data) || 'candidate_name'
     sort_direction = params.dig(:order, '0', :dir) || 'asc'
-    page = params[:start].to_i / (params[:length].to_i + 1)
+    page = params[:start].to_i / (params[:length].to_i + 1) + 1
     limit = params[:length].to_i
 
     filters = {}
-    filters[:candidate_name] = /#{params.dig(:columns, '0', :search, :value)}/i unless params.dig(:columns, '0',
-                                                                                                  :search, :value).blank?
-    filters[:sex] = params.dig(:columns, '1', :search, :value) unless params.dig(:columns, '1', :search, :value).blank?
-    filters[:constituency_id] = params.dig(:columns, '2', :search, :value) unless params.dig(:columns, '2', :search, :value).blank?
+    search_columns = { '0' => :candidate_name, '1' => :sex, '2' => :constituency_id }
+
+    search_columns.each do |index, field|
+      search_value = params.dig(:columns, index, :search, :value)
+      next if search_value.blank?
+
+      filters[field] = if field == :candidate_name
+                         /#{search_value}/i
+                       else
+                         field == :constituency_id ? search_value.to_i : search_value
+                       end
+    end
 
     @candidates = Candidate.where(filters).order("#{sort_column} #{sort_direction}").page(page).per(limit)
     total_records = Candidate.count
+    total_votes = Candidate.total_votes_obtained(filters)
+
     respond_to do |format|
       format.html # index.html.erb
       format.json do
-        render json: { candidates: @candidates, meta: pagination_meta(@candidates), total_records: }
+        render json: { candidates: @candidates.to_a, meta: pagination_meta(@candidates), total_records:,
+                       total_votes: }
       end
     end
   end
