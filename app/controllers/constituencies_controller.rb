@@ -8,16 +8,6 @@ class ConstituenciesController < ApplicationController
     page = params[:start].to_i / (params[:length].to_i + 1)
     limit = params[:length].to_i
 
-    # filters = {}
-    # filters[:constituency_id] = params.dig(:columns, '0', :search, :value) unless params.dig(:columns, '0', :search,
-    #                                                                                          :value).blank?
-    # unless params.dig(:columns, '1', :search,
-    #                   :value).blank?
-    #   filters[:constituency_name] =
-    #     /#{params.dig(:columns, '1', :search, :value)}/i
-    # end
-    # filters[:constituency_type] = params.dig(:columns, '2', :search, :value) unless params.dig(:columns, '2', :search,
-    #  :value).blank?
     filters = {}
     search_columns = { '0' => :constituency_id, '1' => :constituency_name, '2' => :constituency_type }
 
