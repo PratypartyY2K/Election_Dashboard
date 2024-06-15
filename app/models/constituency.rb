@@ -31,7 +31,31 @@ class Constituency
                                    ]).first['distinct_party_count'] || 0
   end
 
-  def self.constituency_name_by_constituency_id(constituency_id)
-    find_by(constituency_id:)
+  # find sum of all voters present in the table
+  def self.voter_count_filtered(filters = {})
+    pipeline = [
+      { '$match' => filters },
+      { '$group' => {
+        _id: nil,
+        totalVoters: { "$sum": '$voters' }
+      } }
+    ]
+
+    result = collection.aggregate(pipeline).first
+    result ? result['totalVoters'] : 0
+  end
+
+  # find sum of all votes obtained by all the candidates combined
+  def self.candidate_count_filtered(filters = {})
+    pipeline = [
+      { '$match' => filters },
+      { '$group' => {
+        _id: nil,
+        totalCandidateCount: { "$sum": '$candidate_count' }
+      } }
+    ]
+
+    result = collection.aggregate(pipeline).first
+    result ? result['totalCandidateCount'] : 0
   end
 end

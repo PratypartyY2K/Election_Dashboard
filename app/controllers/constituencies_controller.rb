@@ -8,23 +8,38 @@ class ConstituenciesController < ApplicationController
     page = params[:start].to_i / (params[:length].to_i + 1)
     limit = params[:length].to_i
 
+    # filters = {}
+    # filters[:constituency_id] = params.dig(:columns, '0', :search, :value) unless params.dig(:columns, '0', :search,
+    #                                                                                          :value).blank?
+    # unless params.dig(:columns, '1', :search,
+    #                   :value).blank?
+    #   filters[:constituency_name] =
+    #     /#{params.dig(:columns, '1', :search, :value)}/i
+    # end
+    # filters[:constituency_type] = params.dig(:columns, '2', :search, :value) unless params.dig(:columns, '2', :search,
+    #  :value).blank?
     filters = {}
-    filters[:constituency_id] = params.dig(:columns, '0', :search, :value) unless params.dig(:columns, '0', :search,
-                                                                                             :value).blank?
-    unless params.dig(:columns, '1', :search,
-                      :value).blank?
-      filters[:constituency_name] =
-        /#{params.dig(:columns, '1', :search, :value)}/i
-    end
-    filters[:constituency_type] = params.dig(:columns, '2', :search, :value) unless params.dig(:columns, '2', :search,
-                                                                                               :value).blank?
+    search_columns = { '0' => :constituency_id, '1' => :constituency_name, '2' => :constituency_type }
 
+    search_columns.each do |index, field|
+      search_value = params.dig(:columns, index, :search, :value)
+      next if search_value.blank?
+
+      filters[field] = if field == :constituency_name
+                         /#{search_value}/i
+                       else
+                         field == :constituency_id ? search_value.to_i : search_value
+                       end
+    end
     @constituencies = Constituency.where(filters).order_by("#{sort_column} #{sort_direction}").page(page).per(limit)
     total_records = Constituency.count
+    total_voters = Constituency.voter_count_filtered(filters)
+    total_candidate_count = Constituency.candidate_count_filtered(filters)
     respond_to do |format|
       format.html
       format.json do
-        render json: { constituencies: @constituencies, meta: pagination_meta(@constituencies), total_records: }
+        render json: { constituencies: @constituencies, meta: pagination_meta(@constituencies), total_records:,
+                       total_voters:, total_candidate_count: }
       end
     end
   end

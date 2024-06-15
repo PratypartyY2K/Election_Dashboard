@@ -15,8 +15,6 @@
         <th> Constituency ID </th>
         <th> Constituency Name </th>
         <th> Constituency Type </th>
-        <th> Voters </th>
-        <th> Candidate Count </th>
       </tr>
       <tr class="filters">
         <th><input type="text" id="constituency-id-search" placeholder="Search ID"></th>
@@ -26,8 +24,6 @@
             <option value="">All</option>
           </select>
         </th>
-        <th><input type="text" name="voters" id="consituency_voter_count" placeholder="Number of voters"></th>
-        <th><input type="text" name="candidate_count" id="consituency_cc" placeholder="Candidate Count"></th>
       </tr>
     </thead>
     <tbody>
@@ -35,16 +31,14 @@
     </tbody>
   </table>
   <div class="statistics">
-    <p id="total_voters_in_a_draw"></p>
-    <p id="average_cancount"></p>
+    <p id="total_voters"></p>
+    <p id="total_candidate_count"></p>
   </div>
 </div>
   <script>
-    let totalVoters = document.getElementById('total_voters_in_a_draw');
-    let candidateCount = document.getElementById('total_cancount_in_a_draw');
+    let totalVoters = document.getElementById('total_voters');
+    let candidateCount = document.getElementById('total_candidate_count');
     $(document).ready(function() {
-      let cc = 0;
-      let voter_count = 0;
       $( ":text" ).val('');
       var table = $('#constituencies-table').DataTable({
         layout:{
@@ -66,13 +60,14 @@
           url: '/constituencies.json',
           data: function(d) {
             console.log(d);
-            cc = 0;
-            voter_count = 0;
             d.columns[0].search.value = $('#constituency-id-search').val();
             d.columns[1].search.value = $('#constituency-name-search').val();
             d.columns[2].search.value = $('#constituency-type-select').val();
           },
           dataSrc: function(json) {
+            // console.log(json);
+            totalVoters.textContent = `Count of all voters filtered = ${json.total_voters}`;
+            candidateCount.textContent = `Count of all candidates filtered = ${json.total_candidate_count}`;
             json.recordsTotal = json.total_records;
             json.recordsFiltered = json.meta.total_count;
             return json.constituencies;
@@ -87,14 +82,6 @@
               return `<a href="/constituencies/${row._id}">${data}</a>`; },
           },
           { data: 'constituency_type' },
-          { data: 'voters', render: function(data, type, row) { // Hyperlink to /constituencies/:id
-              voter_count += data;
-              return `${data}`; 
-          }},
-          { data: 'candidate_count', render: function(data, type, row) { // Hyperlink to /constituencies/:id
-              cc += data;
-              return `${data}`;
-          }},
         ],
         pageLength: 10, // default page length
         lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]], // dropdown options
@@ -114,11 +101,6 @@
               alert(status, errr);
             }
           });
-        },
-        drawCallback: function () {
-          console.log("drawCallback call");
-          totalVoters.textContent = `Total count of candidates = ${cc}`;
-          candidateCount.textContent = `Total count of voters = ${voter_count}`;
         },
       });
 
