@@ -21,6 +21,7 @@ class ConstituenciesController < ApplicationController
                          field == :constituency_id ? search_value.to_i : search_value
                        end
     end
+
     @constituencies = Constituency.where(filters).order_by("#{sort_column} #{sort_direction}").page(page).per(limit)
     total_records = Constituency.count
     total_voters = Constituency.voter_count_filtered(filters)

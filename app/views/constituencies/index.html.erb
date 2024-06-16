@@ -40,6 +40,8 @@
     let candidateCount = document.getElementById('total_candidate_count');
     $(document).ready(function() {
       $( ":text" ).val('');
+      let params = new URLSearchParams(window.location.search);
+      let constituencyId = params.get('constituency_id');
       var table = $('#constituencies-table').DataTable({
         layout:{
           top2Start: 'pageLength',
@@ -60,7 +62,13 @@
           url: '/constituencies.json',
           data: function(d) {
             console.log(d);
-            d.columns[0].search.value = $('#constituency-id-search').val();
+            if (constituencyId !== null) {
+              console.log(constituencyId);
+              d.columns[0].search.value = constituencyId;
+              document.getElementById('constituency-id-search').value = constituencyId;
+            } else {
+              d.columns[0].search.value = $('#constituency-id-search').val();
+            }
             d.columns[1].search.value = $('#constituency-name-search').val();
             d.columns[2].search.value = $('#constituency-type-select').val();
           },

@@ -44,10 +44,11 @@ class CandidatesController < ApplicationController
   # GET /candidates/1
   def show
     party_id = set_candidate.party_id
-    party_name = Party.find_by(party_id:)&.party || 'Independent candidate'
+    party_name = Party.find_by(party_id:)&.party
     respond_to do |format|
       format.html # show.html.erb
-      format.json { render json: { candidate: @candidate, partyName: party_name } }
+      format.json { render json: { candidate: @candidate } }
+      @party_name = party_name
     end
   end
 

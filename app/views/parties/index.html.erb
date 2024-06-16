@@ -28,6 +28,9 @@
     $(document).ready(function() {
       console.log("First call");
       $( ":text" ).val('');
+      let params = new URLSearchParams(window.location.search);
+      let partyName = params.get('party');
+      console.log(partyName);
       const table = $('#parties-table').DataTable({
         layout:{
           top2Start: 'pageLength',
@@ -47,9 +50,15 @@
         ajax: {
           url: '/parties.json',
           data: function(d) {
-            // console.log(d);
+            console.log(d);
             d.columns[0].search.value = $('#party-id-search').val();
-            d.columns[1].search.value = $('#party-name-search').val();
+            if (partyName !== null) {
+              // console.log(partyName);
+              d.columns[1].search.value = partyName;
+              document.getElementById('party-name-search').value = partyName;
+            } else {
+              d.columns[1].search.value = $('#party-name-search').val();
+            }
           },
           dataSrc: function(json) {
             // console.log(json);

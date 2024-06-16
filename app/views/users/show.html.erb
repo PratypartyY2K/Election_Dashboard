@@ -53,7 +53,12 @@
         userID.textContent = data.user._id || "N/A";
         userName.textContent = data.user.name || "N/A";
         userGender.textContent = data.user.gender || "N/A";
-        userConstituency.textContent = data.user.constituency_id  || "N/A";
+        let constituencyId = data.user.constituency_id || "N/A";
+        if (constituencyId !== "N/A") {
+          userConstituency.innerHTML = `<%= link_to @user.constituency_id, constituencies_path(constituency_id: @user.constituency_id) %>`
+        } else {
+          userConstituency.textContent = "N/A";
+        }
         voterCountElement.textContent = data.voter_count  || "0";
       })
       .catch(error => {

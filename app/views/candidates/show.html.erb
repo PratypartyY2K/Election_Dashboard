@@ -59,36 +59,46 @@
 <script>
 	document.addEventListener('DOMContentLoaded', function() {
 	  let candidatePartyName = document.getElementById('candidate_party_name');
-      let candidateID = document.getElementById('candidate_id');
-      let candidateName= document.getElementById('candidate_name');
-      let candidateType = document.getElementById('candidate_type');
-      let candidateGender = document.getElementById('candidate_gender');
-      let candidateAge = document.getElementById('candidate_age');
-      let candidateConstituencyID = document.getElementById('candidate_constituency_id');
-      let candidatePosition = document.getElementById('candidate_position');
-      let candidateVotesObtained = document.getElementById('candidate_votes_obtained');
-      let candidateVoteSharePercentage = document.getElementById('candidate_vote_share_percentage');
-	    fetch('/candidates/<%= @candidate.id %>.json')
-	      .then(response => {
-	        if (!response.ok) {
-	          throw new Error('Network response was not ok');
-	        }
-	        return response.json();
-	      })
-	      .then(data => {
-          candidateID.textContent = data.candidate._id || "N/A";
-          candidateName.textContent = data.candidate.candidate_name || "N/A";
-          candidateType.textContent = data.candidate.candidate_type || "N/A";
-          candidateGender.textContent = data.candidate.sex || "N/A";
-          candidateAge.textContent = data.candidate.age || "N/A";
-          candidateConstituencyID.textContent = data.candidate.constituency_id || "N/A";
-          candidatePosition.textContent = data.candidate.position || "N/A";
-          candidateVotesObtained.textContent = data.candidate.votes_obtained || "N/A";
-          candidateVoteSharePercentage.textContent = data.candidate.vote_share_percentage + ' %' || "N/A";
-	        candidatePartyName.textContent = data.partyName;
-	      })
-	      .catch(error => {
-	        console.error('There was a problem with the fetch operation:', error);
-	      });
+    let candidateID = document.getElementById('candidate_id');
+    let candidateName= document.getElementById('candidate_name');
+    let candidateType = document.getElementById('candidate_type');
+    let candidateGender = document.getElementById('candidate_gender');
+    let candidateAge = document.getElementById('candidate_age');
+    let candidateConstituencyID = document.getElementById('candidate_constituency_id');
+    let candidatePosition = document.getElementById('candidate_position');
+    let candidateVotesObtained = document.getElementById('candidate_votes_obtained');
+    let candidateVoteSharePercentage = document.getElementById('candidate_vote_share_percentage');
+    fetch('/candidates/<%= @candidate.id %>.json')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        candidateID.textContent = data.candidate._id || "N/A";
+        candidateName.textContent = data.candidate.candidate_name || "N/A";
+        candidateType.textContent = data.candidate.candidate_type || "N/A";
+        candidateGender.textContent = data.candidate.sex || "N/A";
+        candidateAge.textContent = data.candidate.age || "N/A";
+        let constituencyId = data.candidate.constituency_id || "N/A";
+        if (constituencyId !== "N/A") {
+          candidateConstituencyID.innerHTML = `<%= link_to @candidate.constituency_id, constituencies_path(constituency_id: @candidate.constituency_id) %>`;
+        } else {
+          candidateConstituencyID.textContent = "N/A";
+        }
+        candidatePosition.textContent = data.candidate.position || "N/A";
+        candidateVotesObtained.textContent = data.candidate.votes_obtained || "N/A";
+        candidateVoteSharePercentage.textContent = data.candidate.vote_share_percentage + ' %' || "N/A";
+        let partyName = '<%= @party_name %>';
+        if (partyName !== '') {
+          candidatePartyName.innerHTML = '<%= link_to @party_name, parties_path(party: @party_name) %>';
+        } else {
+          candidatePartyName.textContent = 'Independent Candidate';
+        }
+      })
+      .catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
+      });
   	});
 </script>
