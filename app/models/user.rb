@@ -9,7 +9,9 @@ class User
   field :name, type: String
   field :gender, type: String
   field :constituency_id, type: Integer
-  validates :name, presence: true
+
+  # validations
+  validates :name, presence: true, format: { with: /\A[a-zA-Z]+\z/, message: "only allows letters" }
   validates :gender, presence: true
   validates :constituency_id, presence: true
 

@@ -16,6 +16,11 @@ class Candidate
   field :vote_share_percentage, type: Float
   field :party_id, type: Integer
 
+  # validations
+  validates :candidate_name, presence: true, format: { with: /\A[a-zA-Z]+\z/, message: "only allows letters" }
+  validates :sex, presence: true
+  validates :age, presence: true, numericality: { only_integer: true }
+
   # Associations
   has_one :constituency, class_name: 'Constituency', foreign_key: :constituency_id
   has_one :party, class_name: 'Party', foreign_key: :party_id
